@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פעילות: מאחורי הקליקים – סוגי נתונים והבנת הלמידה</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 650px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+        .intro {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.05rem;
+            line-height: 1.4;
+        }
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 25px;
+        }
+        .section:last-of-type {
+            border-bottom: none;
+        }
+        h2 {
+            color: #8e44ad;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        p.instruction {
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        /* עיצוב שורות הסרגלים */
+        .data-row {
+            background: #fdfefe;
+            border: 1px solid #e6e9ed;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .data-title {
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .slider-labels {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            width: 110px;
+        }
+        .slider-labels.right-label {
+            text-align: right;
+        }
+        input[type="range"] {
+            flex-grow: 1;
+            accent-color: #8e44ad;
+            cursor: pointer;
+        }
+        .rating-badge {
+            background-color: #8e44ad;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            min-width: 25px;
+            text-align: center;
+        }
+        /* חלק 2: שאלה ממוקדת */
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        textarea {
+            width: 100%;
+            height: 90px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: bold;
+        }
+        .btn-submit:hover {
+            background-color: #732d91;
+        }
+        /* תיבת סיכום */
+        .summary-box {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f5eeec;
+            border-right: 5px solid #8e44ad;
+            border-radius: 4px;
+            display: none;
+        }
+        .moodle-notice {
+            background-color: #fff3cd;
+            border-right: 4px solid #ffc107;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #856404;
+            font-size: 0.95rem;
+        }
+        .btn-copy {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-copy:hover {
+            background-color: #219653;
+        }
+        .copy-success {
+            color: #27ae60;
+            margin-right: 15px;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>מאחורי הקליקים: סוגי נתונים והבנת הלמידה</h1>
+    <p class="intro">
+        מערכות טכנולוגיה חינוכית (EdTech) מציגות הבטחה גדולה: הבנה עמוקה של הלומד באמצעות מעקב נתונים (Datafication). אך האם כל הדאטה באמת משקף למידה אמיתית?
+    </p>
+
+    <form id="dataForm" onsubmit="submitActivity(event)">
+        
+        <!-- חלק 1: סרגלי הזזה לכל סוג נתון -->
+        <div class="section">
+            <h2>חלק 1: עד כמה הנתון משקף "למידה אמיתית"?</h2>
+            <p class="instruction">החליקו את הסרגל עבור כל סוג נתון, מ-1 (מפספס לחלוטין את מהות הלמידה) ועד 10 (מציג תמונה מדויקת של הלמידה והקשיים שלי):</p>
+            
+            <!-- נתון 1 -->
+            <div class="data-row">
+                <span class="data-title">1. נתוני מעורבות טכנית (זמן מסך, מספר קליקים, תדירות כניסות לאתר)</span>
+                <div class="slider-container">
+                    <span class="slider-labels">1 - מפספס לחלוטין</span>
+                    <input type="range" name="data_tech" min="1" max="10" value="5" oninput="updateBadge(this, 'badge1')">
+                    <span class="slider-labels right-label">10 - תמונה מדויקת</span>
+                    <span id="badge1" class="rating-badge">5</span>
+                </div>
+            </div>
+
+            <!-- נתון 2 -->
+            <div class="data-row">
+                <span class="data-title">2. נתוני קצב התקדמות (מהירות המעבר בין עמודי הלימוד או קצב הצפייה בסרטונים)</span>
+                <div class="slider-container">
+                    <span class="slider-labels">1 - מפספס לחלוטין</span>
+                    <input type="range" name="data_pace" min="1" max="10" value="5" oninput="updateBadge(this, 'badge2')">
+                    <span class="slider-labels right-label">10 - תמונה מדויקת</span>
+                    <span id="badge2" class="rating-badge">5</span>
+                </div>
+            </div>
+
+            <!-- נתון 3 -->
+            <div class="data-row">
+                <span class="data-title">3. נתוני ביצועים והערכה (ציונים בבחנים עצמיים קצרים לאורך הלמידה)</span>
+                <div class="slider-container">
+                    <span class="slider-labels">1 - מפספס לחלוטין</span>
+                    <input type="range" name="data_perf" min="1" max="10" value="5" oninput="updateBadge(this, 'badge3')">
+                    <span class="slider-labels right-label">10 - תמונה מדויקת</span>
+                    <span id="badge3" class="rating-badge">5</span>
+                </div>
+            </div>
+
+            <!-- נתון 4 -->
+            <div class="data-row">
+                <span class="data-title">4. נתוני אינטראקציה חברתית (מספר התגובות וההשתתפות בפורום הדיונים)</span>
+                <div class="slider-container">
+                    <span class="slider-labels">1 - מפספס לחלוטין</span>
+                    <input type="range" name="data_social" min="1" max="10" value="5" oninput="updateBadge(this, 'badge4')">
+                    <span class="slider-labels right-label">10 - תמונה מדויקת</span>
+                    <span id="badge4" class="rating-badge">5</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- חלק 2: בחירה ממוקדת ונימוק קצר -->
+        <div class="section">
+            <h2>חלק 2: הנתון המטעה ביותר</h2>
+            
+            <label for="misleadingSelect" style="display:block; margin-bottom:10px; font-weight: 500;">
+                מבין ארבעת סוגי הנתונים למעלה, איזה נתון הוא לדעתכם **הכי מטעה** (זה שהכי קל 'לזייף' או מציג מצג שווא)?
+            </label>
+            <select id="misleadingSelect" name="worst_data_type" required>
+                <option value="" disabled selected>בחרו סוג נתון...</option>
+                <option value="נתוני מעורבות טכנית (זמן מסך וקליקים)">נתוני מעורבות טכנית (זמן מסך וקליקים)</option>
+                <option value="נתוני קצב התקדמות (מהירות מעבר דפים/סרטונים)">נתוני קצב התקדמות (מהירות מעבר דפים/סרטונים)</option>
+                <option value="נתוני ביצועים והערכה (בחנים קצרים)">נתוני ביצועים והערכה (בחנים קצרים)</option>
+                <option value="נתוני אינטראקציה חברתית (תגובות בפורום)">נתוני אינטראקציה חברתית (תגובות בפורום)</option>
+            </select>
+
+            <label for="shortExplanation" style="display:block; margin-bottom:10px; font-weight: 500;">
+                הסבירו במשפט אחד או שניים – מדוע נתון זה נוטה להטעות?
+            </label>
+            <textarea id="shortExplanation" name="short_explanation" required placeholder="כתבו את ההסבר הממוקד שלכם כאן..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">שלח פעילות</button>
+    </form>
+
+    <!-- תיבת סיכום והעתקה למודל -->
+    <div id="summaryBox" class="summary-box">
+        <h3>התשובות שלך מוכנות להגשה!</h3>
+        
+        <div class="moodle-notice">
+            הנחיות להמשך: לחצו על הכפתור הירוק למטה כדי להעתיק את כל התשובות שלכם בבת אחת, ולאחר מכן הדביקו אותן בתיבת ההגשה במודל (Moodle).
+        </div>
+
+        <button type="button" class="btn-copy" onclick="copyToClipboard()">
+            📋 העתק תשובות ללוח
+        </button>
+        <span id="copyMessage" class="copy-success">הועתק בהצלחה! ניתן להדביק במודל.</span>
+
+        <hr style="border: 0; border-top: 1px solid #bdc3c7; margin: 25px 0;">
+        
+        <div id="summaryContent"></div>
+    </div>
+</div>
+
+<script>
+    let textToCopy = "";
+
+    // עדכון המספר המוצג ליד הסרגל בזמן אמת
+    function updateBadge(slider, badgeId) {
+        document.getElementById(badgeId).innerText = slider.value;
+    }
+
+    function submitActivity(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const formData = new FormData(form);
+        
+        const techVal = formData.get('data_tech');
+        const paceVal = formData.get('data_pace');
+        const perfVal = formData.get('data_perf');
+        const socialVal = formData.get('data_social');
+        const worstType = formData.get('worst_data_type');
+        const explanation = formData.get('short_explanation');
+
+        // 1. בניית מחרוזת הטקסט הנקי להעתקה ל-Moodle
+        textToCopy = `תשובות לפעילות: סוגי נתונים והבנת הלמידה\n` +
+                     `--------------------------------------------------\n` +
+                     `חלק 1 - מדד הדירוג של סוגי הנתונים (1-10):\n` +
+                     `• נתוני מעורבות טכנית: ${techVal}/10\n` +
+                     `• נתוני קצב התקדמות: ${paceVal}/10\n` +
+                     `• נתוני ביצועים והערכה: ${perfVal}/10\n` +
+                     `• נתוני אינטראקציה חברתית: ${socialVal}/10\n\n` +
+                     `חלק 2 - הנתון המטעה ביותר והנימוק:\n` +
+                     `• הנתון המטעה ביותר: ${worstType}\n` +
+                     `• הסבר: ${explanation}`;
+        
+        // 2. בניית תצוגת ה-HTML המעוצבת בדף לביקורת הסטודנט
+        let summaryHtml = `
+            <p><strong>תצוגה מקדימה של הדירוגים שקבעת (1-10):</strong></p>
+            <ul style="padding-right: 20px; line-height: 1.6;">
+                <li>מעורבות טכנית: ${techVal}/10</li>
+                <li>קצב התקדמות: ${paceVal}/10</li>
+                <li>ביצועים והערכה: ${perfVal}/10</li>
+                <li>אינטראקציה חברתית: ${socialVal}/10</li>
+            </ul>
+            <p><strong>הנימוק שלך לגבי הנתון המטעה ביותר (${worstType}):</strong></p>
+            <p style="white-space: pre-wrap; background: #fff; padding: 12px; border-radius: 4px; border: 1px solid #dcdde1;">${explanation}</p>
+        `;
+        
+        document.getElementById('summaryContent').innerHTML = summaryHtml;
+        document.getElementById('summaryBox').style.display = 'block';
+        document.getElementById('copyMessage').style.display = 'none';
+        
+        document.getElementById('summaryBox').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyToClipboard() {
+        if (!textToCopy) return;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const msg = document.getElementById('copyMessage');
+            msg.style.display = 'inline';
+            
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }).catch(err => {
+            alert('חלה שגיאה בהעתקה האוטומטית. אנא העתיקו את הטקסט ידנית מתחתית העמוד.');
+        });
+    }
+</script>
+
+</body>
+</html>
