@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyFlow - הבלש הצעיר של פייתון</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2 family=Assistant:wght@300;400;600;700&family=Fira+Code:wght@400;500&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #080c14;
+            color: #f1f5f9;
+        }
+        .title-font {
+            font-family: 'Rubik', sans-serif;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .highlight-line {
+            background-color: rgba(99, 102, 241, 0.25) !important;
+            border-right: 4px solid #6366f1;
+        }
+        .error-line {
+            background-color: rgba(239, 68, 68, 0.25) !important;
+            border-right: 4px solid #ef4444;
+        }
+        .success-line {
+            background-color: rgba(16, 185, 129, 0.25) !important;
+            border-right: 4px solid #10b981;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur px-6 py-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-500/20">
+                    <i class="fa-solid fa-compass text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold title-font tracking-wide flex items-center gap-2">
+                        PyFlow <span class="text-xs bg-indigo-500/20 text-indigo-400 px-2.5 py-0.5 rounded-full font-semibold">סביבת בלשות דינמית</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">חוקרים, עורכים ומריצים קוד פייתון כדי להבין את הזיכרון בעצמנו</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSettingsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-gear text-indigo-400"></i>
+                    <span>הגדרות API של Gemini</span>
+                </button>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse ml-2"></span>
+                    מנוע סימולציה ויזואלי פעיל 🕵️‍♂️
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Right Column: Visualizer, Editor and Predefined Challenges (7 cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+            
+            <!-- Selector of Interactive Bug Scenarios -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4 shadow-xl">
+                <label class="block text-sm font-semibold text-slate-300 mb-2">בחר תרחיש באג לחקירה בלשית:</label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button onclick="loadScenario('typeError')" id="btn_typeError" class="p-3 bg-slate-800 hover:bg-slate-750 rounded-xl border border-indigo-500/30 text-right transition-all group">
+                        <p class="text-xs font-bold text-indigo-400 group-hover:text-indigo-300">🔎 תרחיש 1: שגיאת טיפוס</p>
+                        <p class="text-2xs text-slate-400 mt-1">חישוב גיל מקלט משתמש</p>
+                    </button>
+                    <button onclick="loadScenario('indexError')" id="btn_indexError" class="p-3 bg-slate-800 hover:bg-slate-750 rounded-xl border border-slate-800 text-right transition-all group">
+                        <p class="text-xs font-bold text-slate-300 group-hover:text-indigo-300">🔎 תרחיש 2: חריגה מהלולאה</p>
+                        <p class="text-2xs text-slate-400 mt-1">ממוצע ציונים ברשימה</p>
+                    </button>
+                    <button onclick="loadScenario('stackError')" id="btn_stackError" class="p-3 bg-slate-800 hover:bg-slate-750 rounded-xl border border-slate-800 text-right transition-all group">
+                        <p class="text-xs font-bold text-slate-300 group-hover:text-indigo-300">🔎 תרחיש 3: רקורסיה אינסופית</p>
+                        <p class="text-2xs text-slate-400 mt-1">עצרת ללא תנאי עצירה</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visual Flow Runner Container -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col">
+                <div class="bg-slate-950/60 px-5 py-3 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="h-3 w-3 rounded-full bg-indigo-500/80 animate-pulse"></span>
+                        <span class="text-xs text-slate-300 font-semibold" id="visualizerTitle">סביבת הדמיית קוד זורם (Visualizer Engine)</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="stepCounter" class="text-xs bg-slate-800 text-indigo-400 px-2.5 py-1 rounded-lg border border-slate-700 code-font font-bold">שלב: 0 / 0</span>
+                        <button onclick="toggleEditMode()" id="btnEdit" class="text-xs bg-slate-800 hover:bg-indigo-600/30 hover:border-indigo-500/50 text-indigo-400 px-3 py-1 rounded-lg border border-slate-700 transition-all flex items-center gap-1.5 font-semibold">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span id="btnEditText">ערוך קוד 🛠️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation Stepper Code View -->
+                <div class="relative bg-slate-950/30 overflow-hidden flex flex-col min-h-[220px]">
+                    <!-- View Mode Code Lines -->
+                    <div id="codeLinesContainer" class="flex-1 p-4 code-font text-sm leading-8 select-none overflow-y-auto max-h-[300px]">
+                        <!-- Code lines will be dynamically loaded here -->
+                    </div>
+
+                    <!-- Edit Mode Text Area -->
+                    <div id="codeEditorContainer" class="hidden p-4 flex flex-col gap-3">
+                        <p class="text-xs text-amber-400 bg-amber-950/40 border border-amber-500/20 px-3 py-2 rounded-xl">
+                            <i class="fa-solid fa-triangle-exclamation ml-1"></i>
+                            תקן את השגיאה שלדעתך קיימת בקוד, ולחץ על "שמור והרץ" כדי לבדוק את התיקון שלך בזיכרון!
+                        </p>
+                        <textarea id="codeTextArea" class="w-full h-[180px] bg-slate-950 text-indigo-300 code-font text-xs md:text-sm p-4 outline-none border border-slate-800 focus:border-indigo-500 rounded-xl resize-none leading-relaxed" dir="ltr"></textarea>
+                        <div class="flex justify-end gap-2">
+                            <button onclick="toggleEditMode()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-xl transition-colors">בטל</button>
+                            <button onclick="saveAndRunCode()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-5 py-2 rounded-xl transition-all shadow-lg shadow-emerald-600/20">שמור והרץ קוד מתוקן 🚀</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Stepper Controls -->
+                <div id="stepperControls" class="px-5 py-4 bg-slate-950/60 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex gap-2">
+                        <button onclick="stepPrev()" id="btnPrev" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all disabled:opacity-40" disabled>
+                            <i class="fa-solid fa-arrow-right"></i>
+                            <span>שלב קודם</span>
+                        </button>
+                        <button onclick="stepNext()" id="btnNext" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-lg shadow-indigo-600/20">
+                            <span>שלב הבא</span>
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button onclick="resetSimulation()" class="text-slate-400 hover:text-slate-200 text-xs px-2 py-2 transition-colors" title="אפס סימולציה">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="simulationExplanation" class="flex-1 text-xs text-indigo-300 bg-indigo-950/40 border border-indigo-500/20 px-3 py-2.5 rounded-xl text-right">
+                        לחץ על "שלב הבא" כדי להתחיל לצעוד בתוך הקוד ולראות איך המחשב קורא אותו.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Memory Visualizer (The Dynamic Visual Elements) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Visual Memory Grid -->
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 shadow-xl flex flex-col">
+                    <h3 class="text-sm font-bold title-font text-slate-200 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-indigo-400"></i>
+                        לוח הזיכרון של המחשב (Memory Grid)
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-4">ראה איך משתנים נשמרים, משתנים או נהרסים בזיכרון בזמן אמת</p>
+                    
+                    <div id="memoryContainer" class="flex-1 space-y-3 min-h-[150px] flex flex-col justify-center">
+                        <!-- Dynamic Memory Grid items -->
+                        <div class="text-center py-6 text-slate-500 text-xs">
+                            הזיכרון כרגע ריק. הריצו שלב בקוד כדי ליצור משתנים!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recursion Stack & Console Output Visualizer -->
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 shadow-xl flex flex-col">
+                    <h3 class="text-sm font-bold title-font text-slate-200 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-indigo-400"></i>
+                        מחסנית קריאות ופלט (Stack & Console)
+                    </h3>
+                    
+                    <!-- Console/Terminal simulation -->
+                    <div class="mb-4">
+                        <p class="text-2xs text-slate-400 uppercase tracking-wider mb-1.5">מסך הפלט של התוכנית (Console Output):</p>
+                        <pre id="consoleOutput" class="bg-slate-950 p-3 rounded-xl text-2xs code-font text-slate-300 min-h-[60px] border border-slate-850/80 leading-relaxed text-left" dir="ltr"># הפלט יופיע כאן...</pre>
+                    </div>
+
+                    <!-- Visual Call Stack -->
+                    <div class="flex-1 flex flex-col justify-end">
+                        <p class="text-2xs text-slate-400 uppercase tracking-wider mb-2">מצב מחסנית הרקורסיה (Call Stack Heap):</p>
+                        <div id="stackContainer" class="border-2 border-dashed border-slate-800 rounded-xl p-3 min-h-[110px] flex flex-col-reverse gap-2 overflow-y-auto max-h-[140px] items-center justify-center">
+                            <span class="text-3xs text-slate-600">המחסנית פנויה ורגועה</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Left Column: Socratic Assistant Chat (5 cols) -->
+        <section class="lg:col-span-5 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden max-h-[800px] min-h-[500px]">
+            <!-- Chat Header -->
+            <div class="bg-slate-950/60 px-5 py-4 border-b border-slate-800 flex items-center gap-3">
+                <div class="relative">
+                    <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+                        👾
+                    </div>
+                    <span class="absolute bottom-0 left-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-slate-900"></span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-200 text-sm title-font">הבלש הסוקרטי (PyFlow AI Coach)</h3>
+                    <p class="text-xs text-slate-400">אעזור לך לחשוב ולחקור את המשתנים, אבל לא אכתוב עבורך קוד!</p>
+                </div>
+            </div>
+
+            <!-- Chat Message Window -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 flex flex-col justify-start">
+                <!-- Message from Coach -->
+                <div class="flex gap-3 max-w-[85%] self-start bg-slate-850 p-4 rounded-2xl border border-slate-800 rounded-tr-none text-slate-200 text-sm leading-relaxed shadow-md animate-slide-up">
+                    <div class="text-lg">🤖</div>
+                    <div>
+                        <p class="font-bold text-indigo-400 text-xs mb-1">בלש הקוד</p>
+                        <p>היי בלש צעיר! לפנינו מונח קוד פייתון עם שגיאה או באג חמקמק.</p>
+                        <p class="mt-2 text-indigo-300">השתמש בלחצני <strong>"שלב הבא"</strong> כדי להפעיל את הקוד, ותראה בעין מה קורה לזיכרון של המחשב. ברגע שתזהה משהו חשוד, שלח לי הודעה או לחץ על "ערוך קוד" כדי לתקן אותו!</p>
+                    </div>
+                </div>
+
+                <div id="aiThinking" class="hidden flex gap-3 max-w-[85%] self-start bg-slate-850 p-4 rounded-2xl border border-slate-800 rounded-tr-none text-slate-300 text-sm">
+                    <div class="text-lg">🤖</div>
+                    <div class="space-y-1">
+                        <p class="font-bold text-indigo-400 text-xs">מנתח ומגבש שאלה מנחה...</p>
+                        <div class="flex items-center gap-1 py-1">
+                            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-bounce"></span>
+                            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.2s"></span>
+                            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.4s"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Socratic Detective Quick Prompts -->
+            <div id="quickPrompts" class="px-4 py-2 bg-slate-950/20 border-t border-slate-800 flex flex-wrap gap-2">
+                <button onclick="quickPrompt('תסביר לי מה משמעות השגיאה הזו בבקשה')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">"מה השגיאה אומרת?"</button>
+                <button onclick="quickPrompt('תן לי רמז על פי הזיכרון שמולנו')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">"תן לי רמז קטן"</button>
+                <button onclick="quickPrompt('באיזה שורה בקוד כדאי לי להתחיל לחפש את הבעיה?')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">"איפה להתחיל להסתכל?"</button>
+            </div>
+
+            <!-- Chat Input Form -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/40 flex items-center gap-3">
+                <input type="text" id="userInput" onkeydown="handleChatKey(event)" placeholder="שאל אותי משהו על השלבים או על המשתנים שזיהית..." class="flex-1 bg-slate-900 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm text-slate-200 transition-all placeholder-slate-600 focus:outline-none">
+                <button onclick="sendChatMessage()" class="h-11 w-11 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white flex items-center justify-center transition-all shadow-lg shadow-indigo-600/20">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Custom Prompt Input Modal for User inputs inside simulation -->
+    <div id="simulationInputModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex items-center gap-3 mb-4 text-indigo-400">
+                <i class="fa-solid fa-keyboard text-xl animate-bounce"></i>
+                <h3 class="text-md font-bold title-font text-slate-200">נדרש קלט למשתנה</h3>
+            </div>
+            <p id="modalPromptLabel" class="text-xs text-slate-300 mb-4">הזן קלט לפייתון:</p>
+            <input type="text" id="modalInputFieldValue" placeholder="הקלד כאן..." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3 py-2 text-sm text-slate-200 transition-all mb-4 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            <div class="flex gap-2 justify-end">
+                <button onclick="submitSimulationInput()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-600/20">
+                    המשך בסימולציה
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex items-center gap-3 mb-4 text-indigo-400">
+                <i class="fa-solid fa-gear text-xl"></i>
+                <h3 class="text-md font-bold title-font text-slate-200">הגדרות מפתח Gemini API</h3>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">הזן את מפתח ה-API האישי שלך כדי להתחבר ישירות למודלי הבינה המלאכותית של Google. אם תשמור ריק, האפליקציה תפעל במצב הדמיה סוקרטי חכם ומעולה!</p>
+            
+            <div class="space-y-2 mb-6">
+                <label class="block text-xs font-semibold text-slate-300">מפתח Gemini API:</label>
+                <input type="password" id="apiKeyInput" placeholder="הדבק את מפתח ה-API שלך כאן..." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3 py-2.5 text-sm text-slate-200 transition-all focus:outline-none focus:ring-1 focus:ring-indigo-500 code-font">
+            </div>
+
+            <div class="flex gap-2 justify-end">
+                <button onclick="toggleSettingsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
+                    סגור
+                </button>
+                <button onclick="saveApiKey()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-600/20">
+                    שמור הגדרות
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 max-w-sm w-full bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-2xl flex items-center gap-3">
+        <div id="toastIconContainer" class="p-2 rounded-lg text-white">
+            <i id="toastIcon" class="fa-solid fa-circle-info text-lg"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="text-xs font-bold text-slate-200">הודעה</h4>
+            <p id="toastMessage" class="text-xs text-slate-400 mt-1">תוכן ההודעה</p>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = {
+            typeError: {
+                title: "שגיאת טיפוס (סכום גילים)",
+                code: [
+                    '# שלב 1: מבקשים מהמשתמש להזין את גילו הנוכחי',
+                    'age = input("בן כמה אתה? ")',
+                    '# שלב 2: מנסים לחשב את הגיל בעוד 5 שנים',
+                    'future_age = age + 5',
+                    '# שלב 3: מדפיסים את התוצאה למסך',
+                    'print("בעוד 5 שנים תהיה בן:", future_age)'
+                ],
+                steps: [
+                    { line: 0, vars: {}, stdout: "", stack: [], expl: "המחשב מתחיל לקרוא את קוד התוכנית שלנו." },
+                    { line: 1, vars: {}, stdout: "", stack: [], expl: "מגיעים לפקודת קלט (input). המחשב צריך לקבל ערך מהתלמיד." },
+                    { line: 1, vars: { age: { val: '"15"', type: "str", color: "text-emerald-400" } }, stdout: "בן כמה אתה? 15\n", stack: [], expl: "הקלט נקלט בהצלחה! שים לב ללוח הזיכרון: פונקציית input תמיד מחזירה מחרוזת (str) ולא מספר." },
+                    { line: 3, vars: { age: { val: '"15"', type: "str", color: "text-emerald-400" } }, stdout: "בן כמה אתה? 15\n", stack: [], expl: "באג זוהה! ניסיון לבצע חישוב חיבור (+) בין משתנה מסוג מחרוזת (str) לבין מספר שלם (int). פייתון לא מאפשרת זאת!", isError: true, errorMsg: "TypeError: can only concatenate str (not \"int\") to str" }
+                ],
+                socraticHint: [
+                    "היי! שים לב לשורה 4 בסימולציה שלנו. מה סוג המשתנה age בזיכרון המחשב?",
+                    "נכון מאוד! הוא str (מחרוזת טקסט), כיוון שפונקציית `input()` תמיד מחזירה טקסט. האם אפשר לחבר את המחרוזת '15' למספר 5?",
+                    "בדיוק! אז איך נוכל להסביר לפייתון שאנחנו רוצים להפוך את המחרוזת של הגיל למספר שלם לפני שמחשבים? רמז: תחשוב על `int()`"
+                ],
+                // Validation for fixed code
+                validateFix: function(codeText) {
+                    const cleaned = codeText.replace(/\s+/g, '');
+                    return cleaned.includes('int(input(') || cleaned.includes('int(age)');
+                },
+                fixedScenario: {
+                    title: "שגיאת טיפוס - תוקן בהצלחה! ✨",
+                    code: [
+                        '# שלב 1: מבקשים מהמשתמש להזין את גילו הנוכחי',
+                        'age = int(input("בן כמה אתה? "))',
+                        '# שלב 2: מנסים לחשב את הגיל בעוד 5 שנים',
+                        'future_age = age + 5',
+                        '# שלב 3: מדפיסים את התוצאה למסך',
+                        'print("בעוד 5 שנים תהיה בן:", future_age)'
+                    ],
+                    steps: [
+                        { line: 0, vars: {}, stdout: "", stack: [], expl: "מתחילים להריץ את הקוד המתוקן." },
+                        { line: 1, vars: {}, stdout: "", stack: [], expl: "מגיעים לפקודת קלט מלווה בהמרת טיפוס ל-int." },
+                        { line: 1, vars: { age: { val: "15", type: "int", color: "text-blue-400" } }, stdout: "בן כמה אתה? 15\n", stack: [], expl: "הקלט נקלט והומר בהצלחה למספר שלם (int)! הבט בלוח הזיכרון." },
+                        { line: 3, vars: { age: { val: "15", type: "int", color: "text-blue-400" }, future_age: { val: "20", type: "int", color: "text-blue-400" } }, stdout: "בן כמה אתה? 15\n", stack: [], expl: "מצוין! מכיוון ש-age הוא מספר שלם, פייתון הצליחה לבצע את החיבור 15 + 5 בקלות." },
+                        { line: 5, vars: { age: { val: "15", type: "int", color: "text-blue-400" }, future_age: { val: "20", type: "int", color: "text-blue-400" } }, stdout: "בן כמה אתה? 15\nבעוד 5 שנים תהיה בן: 20\n", stack: [], expl: "התוכנית הסתיימה בהצלחה מוחלטת! פתרת את תעלומת הבלש! 🎉🕵️‍♂️", isSuccess: true }
+                    ]
+                }
+            },
+            indexError: {
+                title: "חריגה מהלולאה (ממוצע ציונים)",
+                code: [
+                    'scores = [85, 90, 78]',
+                    'total = 0',
+                    'count = 0',
+                    'while count <= len(scores):',
+                    '    total += scores[count]',
+                    '    count += 1',
+                    'average = total / count'
+                ],
+                steps: [
+                    { line: 0, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" } }, stdout: "", stack: [], expl: "הגדרנו רשימה בשם scores המכילה 3 איברים." },
+                    { line: 1, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "0", type: "int", color: "text-blue-400" } }, stdout: "", stack: [], expl: "אתחלנו משתנה סכום (total) לערך 0." },
+                    { line: 2, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "0", type: "int", color: "text-blue-400" }, count: { val: "0", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "אתחלנו מונה לולאה (count) לערך 0." },
+                    { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "0", type: "int", color: "text-blue-400" }, count: { val: "0", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "בודקים תנאי לולאה: האם count (0) קטן או שווה לאורך (3)? כן, נכנסים." },
+                    { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "85", type: "int", color: "text-blue-400" }, count: { val: "0", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "מוסיפים את האיבר באינדקס 0 (85) לסכום." },
+                    { line: 5, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "85", type: "int", color: "text-blue-400" }, count: { val: "1", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "מקדמים את count ל-1." },
+                    { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "85", type: "int", color: "text-blue-400" }, count: { val: "1", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם 1 קטן או שווה ל-3? כן." },
+                    { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "175", type: "int", color: "text-blue-400" }, count: { val: "1", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "מוסיפים את האיבר באינדקס 1 (90) לסכום." },
+                    { line: 5, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "175", type: "int", color: "text-blue-400" }, count: { val: "2", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "מקדמים את count ל-2." },
+                    { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "175", type: "int", color: "text-blue-400" }, count: { val: "2", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם 2 קטן או שווה ל-3? כן." },
+                    { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "2", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "מוסיפים את האיבר באינדקס 2 (78) לסכום." },
+                    { line: 5, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "3", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "מקדמים את count ל-3." },
+                    { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "3", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם count (3) קטן או שווה לאורך הרשימה (3)? כן, התנאי מתקיים! נכנסים שוב." },
+                    { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "3", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "באג קריטי! מנסים לגשת לאינדקס 3 ברשימה scores. האם אינדקס 3 קיים ברשימה של 3 איברים?", isError: true, errorMsg: "IndexError: list index out of range" }
+                ],
+                socraticHint: [
+                    "היי, שים לב לשלב האחרון בסימולציה. מהו הערך של count?",
+                    "נכון מאוד, הוא 3. אילו אינדקסים (מיקומים) קיימים ברשימה שיש לה 3 איברים?",
+                    "בדיוק! האינדקסים הם 0, 1 ו-2. אז למה הלולאה ניסתה לגשת לאינדקס 3? תסתכל על תנאי ה-while."
+                ],
+                validateFix: function(codeText) {
+                    const cleaned = codeText.replace(/\s+/g, '');
+                    return cleaned.includes('whilecount<len(scores):') && !cleaned.includes('<=');
+                },
+                fixedScenario: {
+                    title: "חריגה מהלולאה - תוקן בהצלחה! ✨",
+                    code: [
+                        'scores = [85, 90, 78]',
+                        'total = 0',
+                        'count = 0',
+                        'while count < len(scores):',
+                        '    total += scores[count]',
+                        '    count += 1',
+                        'average = total / count'
+                    ],
+                    steps: [
+                        { line: 0, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" } }, stdout: "", stack: [], expl: "אתחלנו רשימת ציונים." },
+                        { line: 1, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "0", type: "int", color: "text-blue-400" } }, stdout: "", stack: [], expl: "סכום total מאופס." },
+                        { line: 2, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "0", type: "int", color: "text-blue-400" }, count: { val: "0", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "count מאופס ל-0." },
+                        { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "0", type: "int", color: "text-blue-400" }, count: { val: "0", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם count (0) קטן מ-3? כן." },
+                        { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "85", type: "int", color: "text-blue-400" }, count: { val: "0", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "הוספנו איבר 0 (85)." },
+                        { line: 5, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "85", type: "int", color: "text-blue-400" }, count: { val: "1", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "count מקודם ל-1." },
+                        { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "85", type: "int", color: "text-blue-400" }, count: { val: "1", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם count (1) קטן מ-3? כן. מוסיפים את 90." },
+                        { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "175", type: "int", color: "text-blue-400" }, count: { val: "1", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "הוספנו איבר 1 (90)." },
+                        { line: 5, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "175", type: "int", color: "text-blue-400" }, count: { val: "2", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "count מקודם ל-2." },
+                        { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "175", type: "int", color: "text-blue-400" }, count: { val: "2", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם count (2) קטן מ-3? כן. מוסיפים את 78." },
+                        { line: 4, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "2", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "הוספנו איבר 2 (78)." },
+                        { line: 5, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "3", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "count מקודם ל-3." },
+                        { line: 3, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "3", type: "int", color: "text-indigo-400" } }, stdout: "", stack: [], expl: "האם count (3) קטן מ-3? לא! התנאי לא מתקיים. יוצאים מהלולאה בשלום!" },
+                        { line: 6, vars: { scores: { val: "[85, 90, 78]", type: "list", color: "text-yellow-400" }, total: { val: "253", type: "int", color: "text-blue-400" }, count: { val: "3", type: "int", color: "text-indigo-400" }, average: { val: "84.33", type: "float", color: "text-emerald-400" } }, stdout: "", stack: [], expl: "מחשבים ממוצע: סכום של 253 חלקי 3 איברים שווה ל-84.33. מצוין! 🎉", isSuccess: true }
+                    ]
+                }
+            },
+            stackError: {
+                title: "רקורסיה אינסופית (עצרת)",
+                code: [
+                    'def factorial(n):',
+                    '    return n * factorial(n - 1)',
+                    'result = factorial(4)'
+                ],
+                steps: [
+                    { line: 2, vars: {}, stdout: "", stack: [], expl: "קוראים לפונקציה factorial עם הערך 4." },
+                    { line: 1, vars: {}, stdout: "", stack: ["factorial(4)"], expl: "נכנסים לפונקציה factorial. כדי להחזיר את הערך של 4, עלינו קודם לחשב את factorial(3)." },
+                    { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)"], expl: "נכנסים שוב! המחסנית מתמלאת. כעת המחשב מחכה לגלות מה זה factorial(2)." },
+                    { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)"], expl: "המחסנית ממשיכה לגדול. מחכים ל-factorial(1)." },
+                    { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)", "factorial(1)"], expl: "המחסנית גדלה... מחכים ל-factorial(0)." },
+                    { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)", "factorial(1)", "factorial(0)"], expl: "המחסנית גדלה... מחכים ל-factorial(-1)." },
+                    { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)", "factorial(1)", "factorial(0)", "factorial(-1)"], expl: "המחסנית מתחילה לעלות על גדותיה (Stack Overflow)! אין פה שום תנאי שיגרום לה לעצור ולחזור אחורה.", isError: true, errorMsg: "RecursionError: maximum recursion depth exceeded in comparison" }
+                ],
+                socraticHint: [
+                    "אופס, ראית את הלבנים שנערמו במחסנית בצד? למה הן המשיכו לגדול בלי סוף?",
+                    "נכון מאוד! הפונקציה קוראת לעצמה שוב ושוב. מתי היא אמורה לעצור?",
+                    "בדיוק, אין לה 'תנאי עצירה' (Base Case). מהו הערך הכי קטן של n עבורו אנחנו כבר יודעים את התשובה לעצרת ללא חישוב נוסף (למשל עבור 1 או 0)?"
+                ],
+                validateFix: function(codeText) {
+                    const cleaned = codeText.replace(/\s+/g, '');
+                    return (cleaned.includes('ifn<=1:') || cleaned.includes('ifn==1:') || cleaned.includes('ifn==0:') || cleaned.includes('ifn<=0:')) && cleaned.includes('return1');
+                },
+                fixedScenario: {
+                    title: "רקורסיה אינסופית - תוקן בהצלחה! ✨",
+                    code: [
+                        'def factorial(n):',
+                        '    if n <= 1:',
+                        '        return 1',
+                        '    return n * factorial(n - 1)',
+                        'result = factorial(4)'
+                    ],
+                    steps: [
+                        { line: 4, vars: {}, stdout: "", stack: [], expl: "קוראים לראשונה ל-factorial(4)." },
+                        { line: 1, vars: {}, stdout: "", stack: ["factorial(4)"], expl: "בודקים תנאי עצירה: האם n (4) קטן או שווה ל-1? לא." },
+                        { line: 3, vars: {}, stdout: "", stack: ["factorial(4)"], expl: "מבצעים קריאה רקורסיבית ל-factorial(3)." },
+                        { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)"], expl: "האם n (3) קטן או שווה ל-1? לא. קוראים ל-factorial(2)." },
+                        { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)"], expl: "האם n (2) קטן או שווה ל-1? לא. קוראים ל-factorial(1)." },
+                        { line: 1, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)", "factorial(1)"], expl: "האם n (1) קטן או שווה ל-1? כן! תנאי העצירה מתקיים!" },
+                        { line: 2, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)", "factorial(2)", "factorial(1)"], expl: "הקריאה factorial(1) מחזירה את הערך 1." },
+                        { line: 3, vars: {}, stdout: "", stack: ["factorial(4)", "factorial(3)"], expl: "חוזרים אחורה! factorial(2) מחשב 2 * 1 ומחזיר 2. המחסנית קטנה!" },
+                        { line: 3, vars: {}, stdout: "", stack: ["factorial(4)"], expl: "חוזרים אחורה! factorial(3) מחשב 3 * 2 ומחזיר 6." },
+                        { line: 3, vars: {}, stdout: "", stack: [], expl: "factorial(4) מחשב 4 * 6 ומחזיר 24. המחסנית ריקה לחלוטין!" },
+                        { line: 4, vars: { result: { val: "24", type: "int", color: "text-blue-400" } }, stdout: "", stack: [], expl: "התוצאה 24 נשמרה בבטחה במשתנה result. עבודה מדהימה! 🕵️‍♂️🎉", isSuccess: true }
+                    ]
+                }
+            }
+        };
+
+        let currentScenario = "typeError";
+        let isFixedActive = false; // Tracks if we are running the fixed simulation
+        let currentStepIndex = 0;
+        let isEditMode = false;
+        let geminiApiKey = localStorage.getItem("pyflow_gemini_key") || "";
+        let chatHistory = [];
+        let offlineState = { scenario: "typeError", stage: 0 };
+
+        function loadScenario(scenarioId) {
+            currentScenario = scenarioId;
+            isFixedActive = false;
+            currentStepIndex = 0;
+            isEditMode = false;
+            offlineState.scenario = scenarioId;
+            offlineState.stage = 0;
+            
+            // UI Toggle back to lines view
+            document.getElementById('codeLinesContainer').classList.remove('hidden');
+            document.getElementById('codeEditorContainer').classList.add('hidden');
+            document.getElementById('stepperControls').classList.remove('hidden');
+            document.getElementById('btnEditText').innerText = "ערוך קוד 🛠️";
+
+            // Highlight selected Scenario button
+            ["typeError", "indexError", "stackError"].forEach(id => {
+                const btn = document.getElementById(`btn_${id}`);
+                if (id === scenarioId) {
+                    btn.classList.add("border-indigo-500", "bg-slate-850");
+                    btn.classList.remove("border-slate-800");
+                } else {
+                    btn.classList.remove("border-indigo-500", "bg-slate-850");
+                    btn.classList.add("border-slate-800");
+                }
+            });
+
+            document.getElementById('visualizerTitle').innerText = `סביבת הדמיית קוד: ${scenarios[scenarioId].title}`;
+            renderCode();
+            applyStep();
+            
+            // Clean Socratic chat history & reload tutor intro message
+            chatHistory = [];
+            const chatWindow = document.getElementById('chatMessages');
+            chatWindow.innerHTML = `
+                <div class="flex gap-3 max-w-[85%] self-start bg-slate-850 p-4 rounded-2xl border border-slate-800 rounded-tr-none text-slate-200 text-sm leading-relaxed shadow-md animate-slide-up">
+                    <div class="text-lg">🤖</div>
+                    <div>
+                        <p class="font-bold text-indigo-400 text-xs mb-1">בלש הקוד</p>
+                        <p>החלפנו תרחיש! לפנינו הקוד של: <strong>${scenarios[scenarioId].title}</strong>.</p>
+                        <p class="mt-2 text-indigo-300">הקלק על "שלב הבא" כדי לראות את הבעיה משתקפת בזיכרון, או על <strong>ערוך קוד 🛠️</strong> אם הבנת איך לתקן את הבאג!</p>
+                    </div>
+                </div>
+                <div id="aiThinking" class="hidden flex gap-3 max-w-[85%] self-start bg-slate-850 p-4 rounded-2xl border border-slate-800 rounded-tr-none text-slate-300 text-sm">
+                    <div class="text-lg">🤖</div>
+                    <div class="space-y-1">
+                        <p class="font-bold text-indigo-400 text-xs">מנתח ומגבש שאלה מנחה...</p>
+                        <div class="flex items-center gap-1 py-1">
+                            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-bounce"></span>
+                            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.2s"></span>
+                            <span class="h-2 w-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.4s"></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            showToast("תרחיש נטען!", `התרחיש "${scenarios[scenarioId].title}" מוכן לחקירה ויזואלית.`, "info");
+        }
+
+        function renderCode() {
+            const container = document.getElementById('codeLinesContainer');
+            container.innerHTML = "";
+            const currentScen = scenarios[currentScenario];
+            const lines = isFixedActive ? currentScen.fixedScenario.code : currentScen.code;
+            
+            lines.forEach((lineText, index) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.id = `codeLine_${index}`;
+                lineDiv.className = "flex items-start gap-4 px-3 py-0.5 rounded transition-all";
+                lineDiv.innerHTML = `
+                    <span class="text-slate-600 select-none text-xs w-6 text-left code-font">${index + 1}</span>
+                    <span class="text-slate-100 flex-1 whitespace-pre code-font text-xs md:text-sm" dir="ltr">${lineText}</span>
+                `;
+                container.appendChild(lineDiv);
+            });
+        }
+
+        function toggleEditMode() {
+            const linesContainer = document.getElementById('codeLinesContainer');
+            const editorContainer = document.getElementById('codeEditorContainer');
+            const stepperControls = document.getElementById('stepperControls');
+            const btnEditText = document.getElementById('btnEditText');
+            const codeTextArea = document.getElementById('codeTextArea');
+
+            if (isEditMode) {
+                // Cancel/Exit edit mode
+                linesContainer.classList.remove('hidden');
+                editorContainer.classList.add('hidden');
+                stepperControls.classList.remove('hidden');
+                btnEditText.innerText = "ערוך קוד 🛠️";
+                isEditMode = false;
+            } else {
+                // Enter edit mode
+                linesContainer.classList.add('hidden');
+                editorContainer.classList.remove('hidden');
+                stepperControls.classList.add('hidden');
+                btnEditText.innerText = "תצוגת סימולציה 👁️";
+                
+                // Load current code state into editor
+                const currentScen = scenarios[currentScenario];
+                codeTextArea.value = (isFixedActive ? currentScen.fixedScenario.code : currentScen.code).join('\n');
+                isEditMode = true;
+            }
+        }
+
+        function saveAndRunCode() {
+            const editedCode = document.getElementById('codeTextArea').value;
+            const currentScen = scenarios[currentScenario];
+
+            // Validate if the student correctly fixed the bug using scenario's custom validation function
+            if (currentScen.validateFix(editedCode)) {
+                isFixedActive = true;
+                currentStepIndex = 0;
+                isEditMode = false;
+                
+                // UI Refresh to lines view
+                document.getElementById('codeLinesContainer').classList.remove('hidden');
+                document.getElementById('codeEditorContainer').classList.add('hidden');
+                document.getElementById('stepperControls').classList.remove('hidden');
+                document.getElementById('btnEditText').innerText = "ערוך קוד 🛠️";
+                
+                renderCode();
+                applyStep();
+
+                showToast("הקוד תוקן בהצלחה! 🎉", "הסימולציה תציג כעת את הקוד המתוקן ללא באגים.", "success");
+                
+                // Socratic tutor feedback directly into chat
+                const congratsMessage = `מדהים ביותר! 🕵️‍♂️✨ הצלחת לאתר את הבאג ולתקן את הקוד בהצלחה! 
+                בוא נראה את זה קורה בזיכרון של המחשב. לחץ על <strong>"שלב הבא"</strong> כדי להריץ את הקוד ולראות איך המשתנים משתנים נכון וללא שגיאות.`;
+                appendTutorMessage(congratsMessage);
+            } else {
+                showToast("השגיאה עדיין קיימת", "הקוד עודכן אך נראה שהבאג או השגיאה המרכזית עדיין כאן. נסה שוב!", "error");
+                // Switch back to view mode but keep the old code broken simulation
+                isEditMode = false;
+                document.getElementById('codeLinesContainer').classList.remove('hidden');
+                document.getElementById('codeEditorContainer').classList.add('hidden');
+                document.getElementById('stepperControls').classList.remove('hidden');
+                document.getElementById('btnEditText').innerText = "ערוך קוד 🛠️";
+                
+                appendTutorMessage("אני רואה ששינית את הקוד, אך השגיאה המרכזית עדיין קיימת. נסה להסתכל שוב בלוח הזיכרון שלי ברגע השגיאה כדי להבין מה לשנות! 🕵️‍♂️");
+            }
+        }
+
+        function applyStep() {
+            const scenario = scenarios[currentScenario];
+            const steps = isFixedActive ? scenario.fixedScenario.steps : scenario.steps;
+            const currentStep = steps[currentStepIndex];
+
+            // Reset lines styling
+            const totalLines = isFixedActive ? scenario.fixedScenario.code.length : scenario.code.length;
+            for (let idx = 0; idx < totalLines; idx++) {
+                const el = document.getElementById(`codeLine_${idx}`);
+                if (el) {
+                    el.classList.remove("highlight-line", "error-line", "success-line");
+                }
+            }
+
+            // Apply specific line highlighting
+            const activeLineEl = document.getElementById(`codeLine_${currentStep.line}`);
+            if (activeLineEl) {
+                if (currentStep.isError) {
+                    activeLineEl.classList.add("error-line");
+                } else if (currentStep.isSuccess) {
+                    activeLineEl.classList.add("success-line");
+                } else {
+                    activeLineEl.classList.add("highlight-line");
+                }
+            }
+
+            // Update Step counter
+            document.getElementById('stepCounter').innerText = `שלב: ${currentStepIndex + 1} / ${steps.length}`;
+
+            // Update Explanation box
+            document.getElementById('simulationExplanation').innerText = currentStep.expl;
+
+            // Update Console/Terminal View
+            const consoleOutput = document.getElementById('consoleOutput');
+            if (currentStep.isError) {
+                consoleOutput.innerText = (currentStep.stdout || "") + `\n>>> ERROR IN LINE ${currentStep.line + 1}:\n${currentStep.errorMsg}`;
+                consoleOutput.classList.add("text-rose-400");
+                consoleOutput.classList.remove("text-slate-300");
+            } else {
+                consoleOutput.innerText = currentStep.stdout || "# ממתין לפלט...";
+                consoleOutput.classList.remove("text-rose-400");
+                consoleOutput.classList.add("text-slate-300");
+            }
+
+            // Update Visual Memory Grid
+            const memoryContainer = document.getElementById('memoryContainer');
+            memoryContainer.innerHTML = "";
+            const keys = Object.keys(currentStep.vars);
+            if (keys.length === 0) {
+                memoryContainer.innerHTML = `
+                    <div class="text-center py-6 text-slate-500 text-xs">
+                        הזיכרון כרגע ריק. הריצו שלב בקוד כדי ליצור משתנים!
+                    </div>
+                `;
+            } else {
+                keys.forEach(key => {
+                    const item = currentStep.vars[key];
+                    const varDiv = document.createElement('div');
+                    varDiv.className = "flex items-center justify-between p-3 bg-slate-950/80 border border-slate-800 rounded-xl hover:border-slate-700 transition-all";
+                    varDiv.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-indigo-400 code-font text-xs font-semibold">${key}</span>
+                            <span class="text-2xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">${item.type}</span>
+                        </div>
+                        <span class="${item.color} code-font text-xs font-medium" dir="ltr">${item.val}</span>
+                    `;
+                    memoryContainer.appendChild(varDiv);
+                });
+            }
+
+            // Update Visual Recursion Call Stack
+            const stackContainer = document.getElementById('stackContainer');
+            stackContainer.innerHTML = "";
+            if (currentStep.stack.length === 0) {
+                stackContainer.innerHTML = `<span class="text-3xs text-slate-600">המחסנית פנויה ורגועה</span>`;
+            } else {
+                currentStep.stack.forEach((frame, idx) => {
+                    const block = document.createElement('div');
+                    block.className = "w-full py-1.5 px-3 bg-indigo-950 border border-indigo-500/40 text-center rounded-lg text-indigo-200 text-2xs code-font font-semibold shadow-md animate-slide-up";
+                    block.innerText = frame;
+                    stackContainer.appendChild(block);
+                });
+            }
+
+            // Update Buttons State
+            document.getElementById('btnPrev').disabled = (currentStepIndex === 0);
+            document.getElementById('btnNext').disabled = (currentStepIndex === steps.length - 1);
+
+            // Handle Input prompt step automatically for broken typeError scenario
+            if (currentScenario === "typeError" && !isFixedActive && currentStepIndex === 1 && !scenario.steps[2].inputGiven) {
+                setTimeout(() => {
+                    showInputPrompt();
+                }, 800);
+            }
+        }
+
+        function showInputPrompt() {
+            const modal = document.getElementById('simulationInputModal');
+            document.getElementById('modalInputFieldValue').value = "15";
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function submitSimulationInput() {
+            const val = document.getElementById('modalInputFieldValue').value.trim() || "15";
+            const modal = document.getElementById('simulationInputModal');
+            
+            // Inject dynamic values for simulated inputs
+            scenarios.typeError.steps[2].vars.age.val = `"${val}"`;
+            scenarios.typeError.steps[2].inputGiven = true;
+            
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                stepNext();
+            }, 300);
+        }
+
+        function stepNext() {
+            const scenario = scenarios[currentScenario];
+            const steps = isFixedActive ? scenario.fixedScenario.steps : scenario.steps;
+            if (currentStepIndex < steps.length - 1) {
+                currentStepIndex++;
+                applyStep();
+            }
+        }
+
+        function stepPrev() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                applyStep();
+            }
+        }
+
+        function resetSimulation() {
+            if (currentScenario === "typeError") {
+                scenarios.typeError.steps[2].inputGiven = false;
+            }
+            currentStepIndex = 0;
+            applyStep();
+            showToast("אותחל מחדש", "הסימולציה אותחלה לשלב הראשון.", "success");
+        }
+
+        const socraticSystemInstruction = `
+            אתה "בלש הקוד (PyFlow AI Coach)" - עוזר הוראה וחונך אישי אמפתי וסבלני במיוחד למדעי המחשב, המיועד לתלמידי חטיבה ותיכון הלומדים פייתון (Python).
+            
+            כלל ברזל וקריטי שאינו ניתן להפרה בשום אופן: 
+            אל תחשוף לעולם את הקוד המתוקן ואל תיתן את הפתרון השלם בצורה ישירה! גם אם התלמיד מתחנן, כועס, מתוסכל או מנסה לשדל אותך לרמות.
+            התפקיד שלך הוא לכוון וללמד אותו דרך פדגוגיה סוקרטית:
+            1. קרא את שאלת התלמיד והבן באיזה תרחיש הוא נמצא כרגע.
+            2. הסבר בקצרה ובשפה פשוטה (עברית ידידותית, נגישה ומעודדת בגובה העיניים) את המושג שגרם לשגיאה (לדוגמה: מה זה IndexError וכו').
+            3. שאל שאלה מנחה אחת או שתיים בלבד, שיכולות לעזור לו לאתר את הבעיה לבד מתוך לוח הזיכרון או ה-Stack שהוא רואה על המסך.
+            4. אל תעמיס בטקסט ארוך. כתוב קצר, ברור, ממוקד ועודד את התלמיד להגיב אליך. השתמש באימוג'ים.
+        `;
+
+        function getOfflineSocraticResponse(userMessageText) {
+            const text = userMessageText.toLowerCase().trim();
+            
+            if (offlineState.scenario !== currentScenario) {
+                offlineState.scenario = currentScenario;
+                offlineState.stage = 0;
+            }
+
+            if (currentScenario === "typeError") {
+                if (offlineState.stage === 0) {
+                    if (text.includes("str") || text.includes("מחרוזת") || text.includes("string") || text.includes("טקסט")) {
+                        offlineState.stage = 1;
+                        return "מעולה! הוא אכן `str` (מחרוזת טקסט). ועכשיו לשאלת הבלש: האם מותר לחבר את מחרוזת הטקסט '15' ישירות למספר 5 בפייתון?";
+                    } else if (text.includes("מספר") || text.includes("int") || text.includes("integer")) {
+                        return "הממ, תסתכל טוב על לוח הזיכרון (Memory Grid) תחת השורה של המשתנה `age`. מה כתוב שם בסוג הטיפוס?";
+                    } else {
+                        return "היי בלש! הבט בלוח הזיכרון הדינמי בצד ימין בשלב 3. מהו סוג המשתנה (Type) של `age`?";
+                    }
+                }
+                if (offlineState.stage === 1) {
+                    if (text.includes("לא") || text.includes("אסור") || text.includes("אי אפשר") || text.includes("no") || text.includes("בטח שלא") || text.includes("בלי") || text.includes("איננה")) {
+                        offlineState.stage = 2;
+                        return "בדיוק! 🕵️‍♂️ פייתון לא מאפשרת לבצע חיבור (+) בין מחרוזת טקסט לבין מספר שלם. אז איך נוכל להסביר לפייתון שאנחנו רוצים להפוך את המחרוזת של הגיל למספר שלם לפני החישוב? (רמז: פונקציה קצרה של 3 אותיות)";
+                    } else if (text.includes("כן") || text.includes("אפשר") || text.includes("מותר") || text.includes("yes")) {
+                        return "אופס! 🛑 חשוב על זה: אם יש לך את המילה 'שלום' והמספר 5, המחשב באמת יכול לחבר אותם? פייתון רואה את '15' כמילה (טקסט) לכל דבר בגלל הגרשיים. האם באמת מותר לחבר טקסט למספר?";
+                    } else {
+                        return "חשוב על הפעולה `age + 5` כאשר `age` הוא טקסט (str) ו-`5` הוא מספר. האם פייתון מסוגלת לבצע חיבור כזה?";
+                    }
+                }
+                if (offlineState.stage === 2) {
+                    if (text.includes("int") || text.includes("אנט") || text.includes("המרה") || text.includes("()int") || text.includes("אינט")) {
+                        offlineState.stage = 0; // reset
+                        return "בול פגיעה! 🎯 שימוש בפונקציית `int(age)` או ישירות `int(input(...))` יהפוך את הטקסט למספר שלם אמיתי בזיכרון. לחץ על כפתור <strong>ערוך קוד 🛠️</strong> למעלה כדי לתקן את הקוד ולהריץ אותו מחדש!";
+                    } else {
+                        return "רמז קטן: אנחנו רוצים להפוך את המשתנה לטיפוס מספר שלם (Integer). איזו פונקציה מובנית בפייתון עושה את זה?";
+                    }
+                }
+            }
+
+            if (currentScenario === "indexError") {
+                if (offlineState.stage === 0) {
+                    if (text.includes("3") || text.includes("שלוש") || text.includes("three")) {
+                        offlineState.stage = 1;
+                        return "נכון מאוד, `count` הגיע לערך 3 בשלב השגיאה. כעת, אילו אינדקסים (מיקומים) קיימים בפועל ברשימה `scores` שיש בה 3 איברים?";
+                    } else {
+                        return "הסתכל על השלב האחרון (שלב השגיאה) בלוח הזיכרון. מהו הערך של המשתנה `count` ברגע שמתרחשת השגיאה?";
+                    }
+                }
+                if (offlineState.stage === 1) {
+                    if (text.includes("0,1,2") || text.includes("0 1 2") || text.includes("עד 2") || text.includes("שתיים") || text.includes("2")) {
+                        offlineState.stage = 2;
+                        return "מדויק! האינדקסים החוקיים הם 0, 1 ו-2 בלבד. אז למה הלולאה ניסתה לגשת לאינדקס 3? תסתכל על תנאי ה-`while` בשורה 4, מה לא בסדר בו?";
+                    } else {
+                        return "זכור שבפייתון ספירת המיקומים מתחילה מ-0. אם ברשימה יש 3 איברים, מהם שלושת האינדקסים החוקיים שלהם?";
+                    }
+                }
+                if (offlineState.stage === 2) {
+                    if (text.includes("שווה") || text.includes("<=") || text.includes("קטן שווה") || text.includes("equal") || text.includes("תנאי")) {
+                        offlineState.stage = 0;
+                        return "בינגו! 🎯 בגלל הסימן קטן-שווה (`<=`), הלולאה חרגה מגבולות הרשימה. לחץ על <strong>ערוך קוד 🛠️</strong> ושנה את הלולאה ל-`count < len(scores)` כדי לפתור את זה!";
+                    } else {
+                        return "הסתכל על שורה 4: `while count <= len(scores)`. האם אנחנו רוצים שהלולאה תגיע למצב שבו `count` שווה בדיוק לאורך הרשימה (3)?";
+                    }
+                }
+            }
+
+            if (currentScenario === "stackError") {
+                if (offlineState.stage === 0) {
+                    if (text.includes("עצירה") || text.includes("לא עוצר") || text.includes("אינסוף") || text.includes("אין תנאי") || text.includes("קוראת לעצמה") || text.includes("בלי סוף")) {
+                        offlineState.stage = 1;
+                        return "מעולה, עלית על זה! הפונקציה קוראת לעצמה שוב ושוב בלי לעצור, מה שגורם למחסנית לקרוס. מהו 'תנאי העצירה' (Base Case) שחסר לנו כאן כדי למנוע את זה?";
+                    } else {
+                        return "הבט במחסנית בצד שמאל ובחלקי הפונקציה שנערמים. למה לדעתך המחסנית ממשיכה לגדול עוד ועוד בלי לחזור אחורה?";
+                    }
+                }
+                if (offlineState.stage === 1) {
+                    if (text.includes("if") || text.includes("תנאי") || text.includes("שווה ל") || text.includes("n ==") || text.includes("1") || text.includes("0")) {
+                        offlineState.stage = 0;
+                        return "מדויק ביותר! 🎯 אנחנו חייבים להוסיף תנאי עצירה כמו `if n <= 1: return 1` שיעצור את הריצה. היכנס ל<strong>ערוך קוד 🛠️</strong> ונסה להוסיף את התנאי לפונקציה!";
+                    } else {
+                        return "חשוב על עצרת: עבור איזה ערך קטן של `n` (למשל 1 או 0) אנחנו כבר יודעים את התשובה מראש (1) ולא צריכים להמשיך להפעיל את הפונקציה?";
+                    }
+                }
+            }
+
+            return "מעניין! ספר לי עוד על מה שראית בלוח הזיכרון או בקוד כדי שנוכל לפתור את הבאג יחד.";
+        }
+
+        async function fetchAIResponse(userMessageText) {
+            const aiThinking = document.getElementById('aiThinking');
+            aiThinking.classList.remove('hidden');
+            aiThinking.scrollIntoView({ behavior: 'smooth' });
+
+            if (!geminiApiKey) {
+                setTimeout(() => {
+                    const responseText = getOfflineSocraticResponse(userMessageText);
+                    aiThinking.classList.add('hidden');
+                    appendTutorMessage(responseText);
+                }, 1000);
+                return;
+            }
+
+            chatHistory.push({ role: "user", parts: [{ text: userMessageText }] });
+            
+            const activeStepInfo = scenarios[currentScenario].steps[currentStepIndex];
+            const contextPrompt = `
+                [מידע מערכת פנימי עבורך]: התלמיד נמצא כעת בשלב ${currentStepIndex + 1} בתרחיש הבאג: "${scenarios[currentScenario].title}".
+                תוכן הקוד שהוא רואה כרגע:
+                ${scenarios[currentScenario].code.join('\n')}
+                משתנים פעילים בזיכרון הנוכחי: ${JSON.stringify(activeStepInfo.vars)}.
+                האם מתרחשת שגיאה כרגע? ${activeStepInfo.isError ? "כן: " + activeStepInfo.errorMsg : "לא"}.
+                ההודעה ששלח התלמיד כעת היא: "${userMessageText}". ענה לו בצורה סוקרטית קצרה וממוקדת בעברית.
+            `;
+
+            const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`;
+
+            try {
+                const response = await fetch(geminiApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: chatHistory,
+                        systemInstruction: {
+                            parts: [{ text: socraticSystemInstruction }]
+                        }
+                    })
+                });
+
+                if (!response.ok) throw new Error("API Connection Failed");
+
+                const result = await response.json();
+                const aiPart = result?.candidates?.[0]?.content?.parts?.[0];
+                const aiText = aiPart?.text || "נתקלתי בקושי קטן, נסה לשאול אותי שוב בצורה אחרת!";
+
+                chatHistory.push({ role: "model", parts: [{ text: aiText }] });
+                appendTutorMessage(aiText);
+            } catch (err) {
+                showToast("בעיית תקשורת", "חל קושי בחיבור לשרת ה-AI של Gemini. מפעיל מצב הדמיה מקומי.", "error");
+                geminiApiKey = ""; 
+                fetchAIResponse(userMessageText);
+            } finally {
+                aiThinking.classList.add('hidden');
+            }
+        }
+
+        function appendUserMessage(text) {
+            const chatWindow = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "flex gap-3 max-w-[85%] self-end bg-indigo-600/10 border border-indigo-500/15 p-4 rounded-2xl rounded-tl-none text-slate-200 text-sm leading-relaxed shadow-sm animate-slide-up";
+            msgDiv.innerHTML = `
+                <div class="text-lg">🧑‍💻</div>
+                <div>
+                    <p class="font-bold text-indigo-400 text-xs mb-1">אני</p>
+                    <p>${text.replace(/\n/g, '<br>')}</p>
+                </div>
+            `;
+            chatWindow.insertBefore(msgDiv, document.getElementById('aiThinking'));
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function appendTutorMessage(text) {
+            const chatWindow = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "flex gap-3 max-w-[85%] self-start bg-slate-850 p-4 rounded-2xl border border-slate-850/60 rounded-tr-none text-slate-200 text-sm leading-relaxed shadow-md animate-slide-up";
+            
+            const formattedText = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+
+            msgDiv.innerHTML = `
+                <div class="text-lg">🤖</div>
+                <div>
+                    <p class="font-bold text-indigo-400 text-xs mb-1">בלש הקוד</p>
+                    <p>${formattedText}</p>
+                </div>
+            `;
+            chatWindow.insertBefore(msgDiv, document.getElementById('aiThinking'));
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function quickPrompt(text) {
+            document.getElementById('userInput').value = text;
+            sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const userInput = document.getElementById('userInput');
+            const text = userInput.value.trim();
+
+            if (!text) return;
+
+            appendUserMessage(text);
+            userInput.value = "";
+            fetchAIResponse(text);
+        }
+
+        function handleChatKey(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            if (modal.classList.contains('hidden')) {
+                document.getElementById('apiKeyInput').value = geminiApiKey;
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('div').classList.remove('scale-95');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                modal.querySelector('div').classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            geminiApiKey = key;
+            localStorage.setItem("pyflow_gemini_key", key);
+            showToast("נשמר בהצלחה!", "מפתח ה-API עודכן וישמש את חונך הקוד.", "success");
+            toggleSettingsModal();
+        }
+
+        function showToast(title, message, type = "info") {
+            const toast = document.getElementById('notificationToast');
+            const tTitle = document.getElementById('toastTitle');
+            const tMessage = document.getElementById('toastMessage');
+            const iconContainer = document.getElementById('toastIconContainer');
+            const icon = document.getElementById('toastIcon');
+
+            tTitle.innerText = title;
+            tMessage.innerText = message;
+
+            if (type === "success") {
+                iconContainer.className = "p-2 rounded-lg bg-emerald-500 text-white";
+                icon.className = "fa-solid fa-circle-check text-lg";
+            } else if (type === "error") {
+                iconContainer.className = "p-2 rounded-lg bg-rose-500 text-white";
+                icon.className = "fa-solid fa-circle-xmark text-lg";
+            } else {
+                iconContainer.className = "p-2 rounded-lg bg-indigo-500 text-white";
+                icon.className = "fa-solid fa-circle-info text-lg";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+                toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            }, 4000);
+        }
+
+        window.onload = function() {
+            loadScenario("typeError");
+            showToast("ברוכים הבאים ל-PyFlow! 🕵️‍♂️", "פתחו בחקירה ויזואלית של הקוד והשתמשו בחונך.", "success");
+        };
+    </script>
+</body>
+</html>
