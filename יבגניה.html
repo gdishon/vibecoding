@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Unseen Scaffolder - יבגניה שלו</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --highlight-hint: #fef08a;
+            --highlight-sentence: #bbf7d0;
+            --highlight-eye: #fbcfe8;
+            --q-word: #fcd34d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 40px 20px; min-height: 100vh; }
+        .container { max-width: 850px; width: 100%; background: var(--card-bg); padding: 40px; border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        h1, h2 { font-family: 'Space Grotesk', sans-serif; text-align: center; margin-bottom: 20px; }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; }
+        
+        .settings-box { background: #f1f5f9; padding: 25px; border-radius: 16px; margin-bottom: 30px; text-align: center; border: 1px solid #e2e8f0; }
+        .settings-box h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); }
+        .radio-group { display: flex; justify-content: center; gap: 25px; font-weight: 500; flex-wrap: wrap; }
+        .radio-group label { background: white; padding: 10px 20px; border-radius: 8px; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; }
+        .radio-group label:hover { border-color: var(--primary); }
+        .radio-group input[type="radio"] { margin-left: 8px; accent-color: var(--primary); }
+        
+        .mode-buttons { display: flex; flex-direction: column; gap: 15px; }
+        .btn-mode { background: #ffffff; border: 2px solid #e2e8f0; padding: 20px; border-radius: 16px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; }
+        .btn-mode:hover { border-color: var(--primary); background: #e0e7ff; color: var(--primary); transform: translateY(-2px); }
+        
+        #reading-screen { display: none; }
+        .text-passage { font-size: 18px; line-height: 1.8; margin-bottom: 25px; color: #334155; direction: ltr; text-align: left; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;}
+        
+        .hint-word { background-color: var(--highlight-hint); padding: 2px 6px; border-radius: 4px; cursor: help; position: relative; font-weight: 600; border-bottom: 2px dotted #ca8a04; }
+        .hint-word:hover::after {
+            content: attr(data-hint); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: white; padding: 6px 12px; border-radius: 8px; font-size: 14px; white-space: nowrap; z-index: 10; direction: rtl;
+        }
+        
+        .hl-sentence { background-color: var(--highlight-sentence); border-radius: 4px; padding: 2px 4px; }
+        .eye-catcher { background-color: var(--highlight-eye); border-radius: 4px; padding: 2px 4px; font-weight: bold; }
+        .trans-btn { background: #1e293b; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer; margin-left: 8px; vertical-align: middle; }
+        .trans-btn:hover { background: var(--primary); }
+        
+        .step-container { display: none; border-left: 4px solid var(--primary); padding-left: 20px; margin-bottom: 20px; background: #f8fafc; padding: 20px; border-radius: 16px 0 0 16px; direction: ltr; text-align: left;}
+        .step-question { font-weight: bold; color: var(--primary); margin-bottom: 10px; direction: rtl; text-align: right; font-size: 18px;}
+        
+        .questions-section { margin-top: 40px; border-top: 2px solid #e2e8f0; padding-top: 30px; direction: ltr; text-align: left;}
+        .q-word { background-color: var(--q-word); font-weight: bold; padding: 0 4px; border-radius: 4px; }
+        .question-item { margin-bottom: 30px; background: #f8fafc; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .question-item p { font-size: 18px; font-weight: 600; margin-bottom: 15px; }
+        .question-item label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 16px; padding: 8px; border-radius: 8px; transition: 0.2s;}
+        .question-item label:hover { background: #e0e7ff; }
+        
+        textarea.open-answer { width: 100%; border: 2px solid #cbd5e1; border-radius: 12px; padding: 15px; font-size: 16px; margin-bottom: 10px; transition: 0.2s; resize: vertical;}
+        textarea.open-answer:focus { outline: none; border-color: var(--primary); }
+        
+        .feedback-msg { margin-top: 15px; font-weight: bold; min-height: 24px; padding: 10px; border-radius: 8px; display: none;}
+        .correct-text { color: #15803d; background: #dcfce7; padding: 10px; border-radius: 8px; display: block; border: 1px solid #bbf7d0;}
+        .wrong-text { color: #b91c1c; background: #fee2e2; padding: 10px; border-radius: 8px; display: block; border: 1px solid #fecaca;}
+        
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; margin: 20px auto; transition: 0.2s; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);}
+        
+        .mode-content { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="selection-screen">
+        <h1>Adaptive Unseen Scaffolder</h1>
+        <p class="subtitle">נוצר על ידי: <strong>יבגניה שלו</strong><br>התאמה אישית של רמת הקושי, אסטרטגיות הלמידה והמשוב.</p>
+        
+        <div class="settings-box">
+            <h3>1. בחר רמת קושי של הטקסט:</h3>
+            <div class="radio-group" style="margin-bottom: 25px;">
+                <label><input type="radio" name="text_level" value="5points" checked> 5 יח"ל (Module E מלא, 5 פסקאות)</label>
+                <label><input type="radio" name="text_level" value="4points"> 4 יח"ל (טקסט ואוצר מילים מותאם)</label>
+            </div>
+            
+            <h3>2. הגדרות משוב לשאלות ההבנה:</h3>
+            <div class="radio-group">
+                <label><input type="radio" name="feedback_type" value="immediate" checked> פידבק מיידי לכל שאלה</label>
+                <label><input type="radio" name="feedback_type" value="delayed"> הגשה בסיום וקבלת ציון מסכם</label>
+            </div>
+        </div>
+
+        <h3>3. איך רמת הפניות שלך היום? (בחר מסלול תמיכה)</h3>
+        <br>
+        <div class="mode-buttons">
+            <button class="btn-mode" onclick="startMode('challenge')">
+                <span>מוכן לאתגר המלא (טקסט ללא עזרים)</span><span>🚀</span>
+            </button>
+            <button class="btn-mode" onclick="startMode('strategy')">
+                <span>אסטרטגיית קריאה (מירוק משפט ראשון ותופסי עין)</span><span>🖍️</span>
+            </button>
+            <button class="btn-mode" onclick="startMode('hints')">
+                <span>צריך קצת עזרה (הדגשת מילים קשות ורמזים)</span><span>💡</span>
+            </button>
+            <button class="btn-mode" onclick="startMode('step')">
+                <span>ליווי צמוד (פירוק לפסקאות ושאלות מנחות)</span><span>👣</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container" id="reading-screen">
+        <div style="text-align: right; margin-bottom: 20px;">
+            <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; text-decoration:underline; font-weight:bold; font-size:16px;" onclick="resetApp()">חזור להגדרות ➔</button>
+        </div>
+        
+        <h2 style="text-align: left; font-family:'DM Sans', sans-serif; color: var(--primary);">The Teenage Sleep Crisis</h2>
+        
+        <!-- ================= CHALLENGE MODE ================= -->
+        <div id="content-challenge-5points" class="mode-content">
+            <div class="text-passage">Getting enough sleep is essential for teenagers, yet many struggle to achieve a full night's rest. Research shows that during adolescence, there is a natural biological shift that makes teens want to stay up later. However, biology is not the only factor.</div>
+            <div class="text-passage">Modern technology plays a significant role in preventing students from sleeping. The blue light emitted by smartphones and tablets can severely disrupt the brain's natural sleep cycle by delaying the release of melatonin. Experts highly recommend keeping electronic devices out of the bedroom.</div>
+            <div class="text-passage">Furthermore, chronic lack of sleep can lead to serious consequences. It may significantly decrease cognitive functions, such as memory and concentration in school. Additionally, it affects emotional stability, making teenagers more prone to stress and anxiety.</div>
+            <div class="text-passage">In a recent 2023 survey conducted in Tel Aviv, 85% of high school teachers noted a dramatic decrease in student concentration. Dr. Smith, who led the study, emphasized that tired students struggle to process new information effectively.</div>
+            <div class="text-passage">To avoid these detrimental issues, students must establish a consistent bedtime routine. Going to bed at the same time every night and avoiding screens an hour before sleep can dramatically improve overall sleep quality and academic performance.</div>
+        </div>
+        <div id="content-challenge-4points" class="mode-content">
+            <div class="text-passage">Getting enough sleep is very important for teenagers, but many do not sleep enough. Science shows that teens naturally want to go to sleep late. However, this is not the only reason they are tired.</div>
+            <div class="text-passage">Modern technology is a big reason why students do not sleep well. The blue light from smartphones and computers can stop the brain from knowing it is time to sleep. Doctors say it is a good idea to leave phones outside the bedroom.</div>
+            <div class="text-passage">Also, not sleeping enough can cause big problems. It can hurt a student's memory and make it hard to focus in class. It can also change their mood, making them feel more stressed and worried.</div>
+            <div class="text-passage">In a new 2023 survey in Tel Aviv, 85% of teachers said that students are too tired to learn. Dr. Smith, the head of the study, explained that tired students cannot understand new things easily.</div>
+            <div class="text-passage">To stop these problems, students need to go to sleep at the same time every night. Reading a book instead of looking at a screen before bed can help them sleep much better and succeed in school.</div>
+        </div>
+
+        <!-- ================= STRATEGY MODE ================= -->
+        <div id="content-strategy-5points" class="mode-content">
+            <div class="text-passage">
+                <span class="hl-sentence">Getting enough sleep is essential for teenagers, yet many struggle to achieve a full night's rest.</span> <button class="trans-btn" onclick="alert('תרגום: שינה מספקת היא חיונית למתבגרים, אך רבים מתקשים להשיג מנוחת לילה מלאה.')">🌐 תרגום</button><br><br>Research shows that during adolescence, there is a natural biological shift that makes teens want to stay up later. However, biology is not the only factor.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">Modern technology plays a significant role in preventing students from sleeping.</span> <button class="trans-btn" onclick="alert('תרגום: לטכנולוגיה מודרנית יש תפקיד משמעותי במניעת שינה מתלמידים.')">🌐 תרגום</button><br><br>The blue light emitted by smartphones and tablets can severely disrupt the brain's natural sleep cycle by delaying the release of melatonin. Experts highly recommend keeping electronic devices out of the bedroom.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">Furthermore, chronic lack of sleep can lead to serious consequences.</span> <button class="trans-btn" onclick="alert('תרגום: יתרה מכך, חוסר שינה כרוני יכול להוביל להשלכות חמורות.')">🌐 תרגום</button><br><br>It may significantly decrease cognitive functions, such as memory and concentration in school. Additionally, it affects emotional stability, making teenagers more prone to stress and anxiety.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">In a recent <span class="eye-catcher">2023</span> survey conducted in <span class="eye-catcher">Tel Aviv</span>, <span class="eye-catcher">85%</span> of high school teachers noted a dramatic decrease in student concentration.</span> <button class="trans-btn" onclick="alert('תרגום: בסקר שנערך לאחרונה בשנת 2023 בתל אביב, 85% ממורי התיכון ציינו ירידה דרמטית בריכוז התלמידים.')">🌐 תרגום</button><br><br>Dr. <span class="eye-catcher">Smith</span>, who led the study, emphasized that tired students struggle to process new information effectively.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">To avoid these detrimental issues, students must establish a consistent bedtime routine.</span> <button class="trans-btn" onclick="alert('תרגום: כדי להימנע מבעיות מזיקות אלו, על התלמידים לבסס שגרת שינה עקבית.')">🌐 תרגום</button><br><br>Going to bed at the same time every night and avoiding screens an hour before sleep can dramatically improve overall sleep quality and academic performance.
+            </div>
+        </div>
+        <div id="content-strategy-4points" class="mode-content">
+            <div class="text-passage">
+                <span class="hl-sentence">Getting enough sleep is very important for teenagers, but many do not sleep enough.</span> <button class="trans-btn" onclick="alert('תרגום: שינה מספקת היא חשובה מאוד למתבגרים, אך רבים לא ישנים מספיק.')">🌐 תרגום</button><br><br>Science shows that teens naturally want to go to sleep late. However, this is not the only reason they are tired.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">Modern technology is a big reason why students do not sleep well.</span> <button class="trans-btn" onclick="alert('תרגום: טכנולוגיה מודרנית היא סיבה גדולה לכך שתלמידים לא ישנים טוב.')">🌐 תרגום</button><br><br>The blue light from smartphones and computers can stop the brain from knowing it is time to sleep. Doctors say it is a good idea to leave phones outside the bedroom.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">Also, not sleeping enough can cause big problems.</span> <button class="trans-btn" onclick="alert('תרגום: כמו כן, חוסר שינה יכול לגרום לבעיות גדולות.')">🌐 תרגום</button><br><br>It can hurt a student's memory and make it hard to focus in class. It can also change their mood, making them feel more stressed and worried.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">In a new <span class="eye-catcher">2023</span> survey in <span class="eye-catcher">Tel Aviv</span>, <span class="eye-catcher">85%</span> of teachers said that students are too tired to learn.</span> <button class="trans-btn" onclick="alert('תרגום: בסקר חדש ב-2023 בתל אביב, 85% מהמורים אמרו שתלמידים עייפים מדי מכדי ללמוד.')">🌐 תרגום</button><br><br>Dr. <span class="eye-catcher">Smith</span>, the head of the study, explained that tired students cannot understand new things easily.
+            </div>
+            <div class="text-passage">
+                <span class="hl-sentence">To stop these problems, students need to go to sleep at the same time every night.</span> <button class="trans-btn" onclick="alert('תרגום: כדי לעצור את הבעיות הללו, תלמידים צריכים ללכת לישון באותה שעה כל לילה.')">🌐 תרגום</button><br><br>Reading a book instead of looking at a screen before bed can help them sleep much better and succeed in school.
+            </div>
+        </div>
+
+        <!-- ================= HINTS MODE ================= -->
+        <div id="content-hints-5points" class="mode-content">
+            <div class="text-passage">Getting enough sleep is <span class="hint-word" data-hint="חיוני">essential</span> for teenagers, yet many struggle to <span class="hint-word" data-hint="להשיג">achieve</span> a full night's rest. Research shows that during adolescence, there is a natural biological shift that makes teens want to stay up later. However, biology is not the only factor.</div>
+            <div class="text-passage">Modern technology plays a <span class="hint-word" data-hint="משמעותי">significant</span> role in preventing students from sleeping. The blue light emitted by smartphones and tablets can severely <span class="hint-word" data-hint="לשבש">disrupt</span> the brain's natural sleep cycle by delaying the release of melatonin. Experts highly recommend keeping electronic devices out of the bedroom.</div>
+            <div class="text-passage">Furthermore, chronic lack of sleep can lead to serious <span class="hint-word" data-hint="השלכות">consequences</span>. It may significantly decrease <span class="hint-word" data-hint="קוגניטיבי (שכלי)">cognitive</span> functions, such as memory and concentration in school. Additionally, it affects emotional stability, making teenagers more prone to stress and anxiety.</div>
+            <div class="text-passage">In a recent 2023 survey conducted in Tel Aviv, 85% of high school teachers noted a dramatic decrease in student concentration. Dr. Smith, who led the study, emphasized that tired students struggle to process new information effectively.</div>
+            <div class="text-passage">To avoid these <span class="hint-word" data-hint="מזיק">detrimental</span> issues, students must establish a <span class="hint-word" data-hint="עקבי">consistent</span> bedtime routine. Going to bed at the same time every night and avoiding screens an hour before sleep can dramatically improve overall sleep quality and academic performance.</div>
+        </div>
+        <div id="content-hints-4points" class="mode-content">
+            <div class="text-passage">Getting enough sleep is very <span class="hint-word" data-hint="חשוב">important</span> for teenagers, but many do not sleep enough. Science shows that teens <span class="hint-word" data-hint="באופן טבעי">naturally</span> want to go to sleep late. However, this is not the only reason they are tired.</div>
+            <div class="text-passage">Modern technology is a big reason why students do not sleep well. The blue light from smartphones and computers can stop the brain from knowing it is time to sleep. Doctors say it is a good idea to leave phones outside the bedroom.</div>
+            <div class="text-passage">Also, not sleeping enough can cause big problems. It can hurt a student's memory and make it hard to <span class="hint-word" data-hint="להתרכז">focus</span> in class. It can also change their mood, making them feel more stressed and worried.</div>
+            <div class="text-passage">In a new 2023 <span class="hint-word" data-hint="סקר">survey</span> in Tel Aviv, 85% of teachers said that students are too tired to learn. Dr. Smith, the head of the study, explained that tired students cannot understand new things easily.</div>
+            <div class="text-passage">To stop these problems, students need to go to sleep at the same time every night. Reading a book instead of looking at a screen before bed can help them sleep much better and <span class="hint-word" data-hint="להצליח">succeed</span> in school.</div>
+        </div>
+
+        <!-- ================= STEP-BY-STEP MODE ================= -->
+        <!-- 5 Points -->
+        <div id="content-step-5points" class="mode-content">
+            <div class="step-container" id="step-1-5points" style="display: block;">
+                <div class="step-question">🎯 שאלה מכוונת: מהם שני הגורמים לקשיי שינה אצל מתבגרים?</div>
+                <div class="text-passage" style="border:none; padding:0; background:transparent;">
+                    Getting enough sleep is essential for teenagers, yet many struggle to achieve a full night's rest. Research shows that during adolescence, there is a natural biological shift that makes teens want to stay up later. However, biology is not the only factor.<br><br>Modern technology plays a significant role in preventing students from sleeping. The blue light emitted by smartphones and tablets can severely disrupt the brain's natural sleep cycle.
+                </div>
+                <button class="btn-primary" onclick="nextStep(2, '5points')">הבנתי, המשך הלאה</button>
+            </div>
+            <div class="step-container" id="step-2-5points">
+                <div class="step-question">🎯 שאלה מכוונת: כיצד חוסר שינה משפיע על התלמידים?</div>
+                <div class="text-passage" style="border:none; padding:0; background:transparent;">
+                    Furthermore, chronic lack of sleep can lead to serious consequences. It may significantly decrease cognitive functions, such as memory and concentration in school. Additionally, it affects emotional stability, making teenagers more prone to stress and anxiety.<br><br>In a recent 2023 survey conducted in Tel Aviv, 85% of high school teachers noted a dramatic decrease in student concentration.
+                </div>
+                <button class="btn-primary" onclick="nextStep(3, '5points')">הבנתי, פסקה אחרונה</button>
+            </div>
+            <div class="step-container" id="step-3-5points">
+                <div class="step-question">🎯 שאלה מכוונת: מהו הפתרון המרכזי שמוצע למצב?</div>
+                <div class="text-passage" style="border:none; padding:0; background:transparent;">
+                    To avoid these detrimental issues, students must establish a consistent bedtime routine. Going to bed at the same time every night and avoiding screens an hour before sleep can dramatically improve overall sleep quality and academic performance.
+                </div>
+                <button class="btn-primary" onclick="alert('כל הכבוד! סיימת את קריאת הטקסט, כעת עבור לשאלות.')">סיום קריאה ומעבר לשאלות</button>
+            </div>
+        </div>
+        
+        <!-- 4 Points -->
+        <div id="content-step-4points" class="mode-content">
+            <div class="step-container" id="step-1-4points" style="display: block;">
+                <div class="step-question">🎯 שאלה מכוונת: מהן הסיבות לכך שתלמידים עייפים?</div>
+                <div class="text-passage" style="border:none; padding:0; background:transparent;">
+                    Getting enough sleep is very important for teenagers, but many do not sleep enough. Science shows that teens naturally want to go to sleep late. However, this is not the only reason they are tired.<br><br>Modern technology is a big reason why students do not sleep well. The blue light from smartphones and computers can stop the brain from knowing it is time to sleep.
+                </div>
+                <button class="btn-primary" onclick="nextStep(2, '4points')">הבנתי, המשך הלאה</button>
+            </div>
+            <div class="step-container" id="step-2-4points">
+                <div class="step-question">🎯 שאלה מכוונת: מה קורה כשתלמידים לא ישנים מספיק?</div>
+                <div class="text-passage" style="border:none; padding:0; background:transparent;">
+                    Also, not sleeping enough can cause big problems. It can hurt a student's memory and make it hard to focus in class. It can also change their mood, making them feel more stressed and worried.<br><br>In a new 2023 survey in Tel Aviv, 85% of teachers said that students are too tired to learn.
+                </div>
+                <button class="btn-primary" onclick="nextStep(3, '4points')">הבנתי, פסקה אחרונה</button>
+            </div>
+            <div class="step-container" id="step-3-4points">
+                <div class="step-question">🎯 שאלה מכוונת: מה התלמידים צריכים לעשות?</div>
+                <div class="text-passage" style="border:none; padding:0; background:transparent;">
+                    To stop these problems, students need to go to sleep at the same time every night. Reading a book instead of looking at a screen before bed can help them sleep much better and succeed in school.
+                </div>
+                <button class="btn-primary" onclick="alert('כל הכבוד! סיימת את קריאת הטקסט, כעת עבור לשאלות.')">סיום קריאה ומעבר לשאלות</button>
+            </div>
+        </div>
+
+        <!-- ================= QUESTIONS SECTION ================= -->
+        <div class="questions-section" id="questions-section" style="display: none;">
+            <h2 style="text-align: left; font-family:'DM Sans', sans-serif; margin-bottom: 30px; color: var(--primary);">Questions</h2>
+            
+            <div class="question-item" id="q1-box">
+                <p>1. <span class="q-word">According to</span> Dr. Smith, <span class="q-word">what</span> prevents students from sleeping well?</p>
+                <label><input type="radio" name="q1" value="a" onchange="handleAnswer('q1', 'b')"> a) Blue light</label>
+                <label><input type="radio" name="q1" value="b" onchange="handleAnswer('q1', 'b')"> b) Modern technology</label>
+                <label><input type="radio" name="q1" value="c" onchange="handleAnswer('q1', 'b')"> c) School assignments</label>
+                <div class="feedback-msg" id="feedback-q1"></div>
+            </div>
+
+            <div class="question-item" id="q2-box">
+                <p>2. <span class="q-word">Why</span> is lack of sleep a problem in Tel Aviv?</p>
+                <label><input type="radio" name="q2" value="a" onchange="handleAnswer('q2', 'c')"> a) It decreases students' concentration.</label>
+                <label><input type="radio" name="q2" value="b" onchange="handleAnswer('q2', 'c')"> b) It changes bedtime routines.</label>
+                <label><input type="radio" name="q2" value="c" onchange="handleAnswer('q2', 'c')"> c) It emits blue light in classrooms.</label>
+                <div class="feedback-msg" id="feedback-q2"></div>
+            </div>
+
+            <div class="question-item" id="q3-box">
+                <p>3. <span class="q-word">What</span> did the recent study in Israel (Tel Aviv) show?</p>
+                <label><input type="radio" name="q3" value="a" onchange="handleAnswer('q3', 'b')"> a) 85% of teens sleep very well.</label>
+                <label><input type="radio" name="q3" value="b" onchange="handleAnswer('q3', 'b')"> b) Teachers notice that students are tired and cannot focus.</label>
+                <label><input type="radio" name="q3" value="c" onchange="handleAnswer('q3', 'b')"> c) Tel Aviv has too much blue light.</label>
+                <div class="feedback-msg" id="feedback-q3"></div>
+            </div>
+
+            <div class="question-item" id="q4-box">
+                <p>4. <span class="q-word">Name</span> ONE solution experts recommend to help teenagers sleep better.</p>
+                <textarea id="q4-answer" class="open-answer" rows="3" placeholder="Type your answer here..."></textarea>
+                <button id="check-q4-btn" class="btn-primary" style="margin: 10px 0; padding: 8px 16px; font-size: 15px;" onclick="checkOpenEnded('q4')">בדוק תשובה (פידבק חכם)</button>
+                <div class="feedback-msg" id="feedback-q4"></div>
+            </div>
+
+            <div class="question-item" id="q5-box">
+                <p>5. <span class="q-word">What</span> is the main idea of the text?</p>
+                <label><input type="radio" name="q5" value="a" onchange="handleAnswer('q5', 'b')"> a) Why teenagers love using smartphones.</label>
+                <label><input type="radio" name="q5" value="b" onchange="handleAnswer('q5', 'b')"> b) The importance of sleep and how to improve it.</label>
+                <label><input type="radio" name="q5" value="c" onchange="handleAnswer('q5', 'b')"> c) How to do well in school exams.</label>
+                <div class="feedback-msg" id="feedback-q5"></div>
+            </div>
+
+            <button id="submit-quiz-btn" class="btn-primary" style="display:none; font-size: 20px; padding: 15px 40px; margin-top:40px;" onclick="submitQuiz()">הגש מבחן (Submit)</button>
+            <div id="final-score" style="font-weight:bold; text-align:center; margin-top:30px; font-size:28px; color: var(--primary);"></div>
+        </div>
+
+    </div>
+
+    <script>
+        let isImmediateFeedback = true;
+        let currentDifficulty = '5points';
+
+        function startMode(mode) {
+            const feedbackPref = document.querySelector('input[name="feedback_type"]:checked').value;
+            isImmediateFeedback = (feedbackPref === 'immediate');
+            currentDifficulty = document.querySelector('input[name="text_level"]:checked').value;
+
+            document.getElementById('submit-quiz-btn').style.display = isImmediateFeedback ? 'none' : 'block';
+            document.getElementById('check-q4-btn').style.display = isImmediateFeedback ? 'inline-block' : 'none';
+            document.getElementById('final-score').innerText = '';
+            
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            document.getElementById('q4-answer').value = '';
+            document.querySelectorAll('.feedback-msg').forEach(msg => {
+                msg.innerText = '';
+                msg.style.display = 'none';
+                msg.className = 'feedback-msg'; 
+            });
+
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('reading-screen').style.display = 'block';
+            document.getElementById('questions-section').style.display = 'block';
+            
+            document.querySelectorAll('.mode-content').forEach(el => el.style.display = 'none');
+            
+            if(mode === 'step') {
+                document.getElementById('content-step-' + currentDifficulty).style.display = 'block';
+                document.getElementById('step-1-' + currentDifficulty).style.display = 'block';
+            } else {
+                document.getElementById('content-' + mode + '-' + currentDifficulty).style.display = 'block';
+            }
+        }
+
+        function handleAnswer(qName, correctValue) {
+            if (!isImmediateFeedback) return; 
+
+            const radios = document.getElementsByName(qName);
+            let selected = null;
+            for(let i=0; i<radios.length; i++) {
+                if(radios[i].checked) selected = radios[i].value;
+            }
+            if(!selected) return;
+
+            const feedbackDiv = document.getElementById('feedback-' + qName);
+            feedbackDiv.style.display = 'block';
+            
+            if (selected === correctValue) {
+                feedbackDiv.className = 'feedback-msg correct-text';
+                feedbackDiv.innerText = '✔ Correct!';
+            } else {
+                feedbackDiv.className = 'feedback-msg wrong-text';
+                feedbackDiv.innerText = '✘ Incorrect. Try again.';
+            }
+        }
+
+        function checkOpenEnded(qId) {
+            const val = document.getElementById(qId + '-answer').value.toLowerCase();
+            const feedbackDiv = document.getElementById('feedback-' + qId);
+            feedbackDiv.style.display = 'block';
+            
+            if (val.trim() === '') {
+                feedbackDiv.className = 'feedback-msg wrong-text';
+                feedbackDiv.innerText = 'Please write an answer first.';
+                return;
+            }
+            
+            if (val.includes('outside') || val.includes('consistent') || val.includes('same time') || val.includes('routine') || val.includes('book') || val.includes('avoiding screens')) {
+                feedbackDiv.className = 'feedback-msg correct-text';
+                feedbackDiv.innerText = '✔ Excellent! You identified a correct reason (e.g. consistent bedtime, no screens, phones outside).';
+            } else {
+                feedbackDiv.className = 'feedback-msg correct-text';
+                feedbackDiv.innerText = '✔ Good try! Consider mentioning keywords like "consistent routine", "same time", or "avoiding screens".';
+            }
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const mcqAnswers = { q1: 'b', q2: 'c', q3: 'b', q5: 'b' };
+            const totalQuestions = 5; 
+
+            for (let q in mcqAnswers) {
+                const radios = document.getElementsByName(q);
+                let selected = null;
+                for(let i=0; i<radios.length; i++) {
+                    if(radios[i].checked) selected = radios[i].value;
+                }
+                
+                const feedbackDiv = document.getElementById('feedback-' + q);
+                feedbackDiv.style.display = 'block';
+                
+                if (selected) {
+                    if (selected === mcqAnswers[q]) {
+                        score += 1;
+                        feedbackDiv.className = 'feedback-msg correct-text';
+                        feedbackDiv.innerText = '✔ Correct!';
+                    } else {
+                        feedbackDiv.className = 'feedback-msg wrong-text';
+                        feedbackDiv.innerText = '✘ Incorrect. The correct answer is (' + mcqAnswers[q] + ').';
+                    }
+                } else {
+                    feedbackDiv.className = 'feedback-msg wrong-text';
+                    feedbackDiv.innerText = '✘ Skipped.';
+                }
+            }
+
+            const val = document.getElementById('q4-answer').value.toLowerCase();
+            const feedbackQ4 = document.getElementById('feedback-q4');
+            feedbackQ4.style.display = 'block';
+            
+            if (val.includes('outside') || val.includes('consistent') || val.includes('same time') || val.includes('routine') || val.includes('avoiding screens')) {
+                score += 1;
+                feedbackQ4.className = 'feedback-msg correct-text';
+                feedbackQ4.innerText = '✔ Correct (Keywords found).';
+            } else if (val.trim() === '') {
+                feedbackQ4.className = 'feedback-msg wrong-text';
+                feedbackQ4.innerText = '✘ Skipped.';
+            } else {
+                score += 0.5;
+                feedbackQ4.className = 'feedback-msg correct-text';
+                feedbackQ4.innerText = '✔ Answer recorded (Partial credit).';
+            }
+
+            const finalGrade = Math.round((score / totalQuestions) * 100);
+            document.getElementById('final-score').innerText = 'Your Final Score: ' + finalGrade + '/100';
+            document.getElementById('submit-quiz-btn').style.display = 'none';
+        }
+
+        function nextStep(stepNum, level) {
+            document.getElementById('step-' + (stepNum-1) + '-' + level).style.display = 'none';
+            document.getElementById('step-' + stepNum + '-' + level).style.display = 'block';
+        }
+
+        function resetApp() {
+            document.getElementById('selection-screen').style.display = 'block';
+            document.getElementById('reading-screen').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
