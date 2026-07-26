@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סדנת רפלקציה: בינה מלאכותית ופדגוגיה</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Rubik', sans-serif;
+    }
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 text-white py-8 px-4 shadow-lg">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-center md:text-right">
+        <span class="inline-block bg-white/20 text-white text-xs px-3 py-1 rounded-full backdrop-blur-md mb-2 font-medium">מרחב רפלקציה אישי</span>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">בינה מלאכותית, פדגוגיה ומה שביניהן</h1>
+        <p class="text-indigo-100 text-sm mt-1">רפלקציה ביקורתית על פיתוח האפליקציה החינוכית והאוטונומיה המקצועית שלך</p>
+      </div>
+      <div id="step-indicator" class="text-xs font-bold bg-white/10 border border-white/20 px-4 py-2 rounded-full text-white backdrop-blur-md shadow-inner">
+        שלב 1 מתוך 3
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto w-full flex-grow p-4 md:p-8">
+    
+    <!-- STEP 1 -->
+    <section id="step-1" class="step-content active bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-xl border border-purple-100 transition-all">
+      <div class="mb-6 border-b border-slate-100 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full shadow-sm">חלק 1</span>
+        <h2 class="text-2xl font-bold mt-3 text-slate-900">אפליקציית ה"ממוצע": נטיית ה-AI לנורמטיביות ב-Vibe Coding</h2>
+        <p class="text-slate-600 mt-2 text-sm leading-relaxed">
+          מודלים של בינה מלאכותית יוצרת מנבאים את הקוד, דפוסי ה-UX וההגיון הלימודי השכיחים ביותר מבחינה סטטיסטית. בזמן פיתוח **אפליקציית הסיום שלך**, מודלי שפה נוטים באופן טבעי לברירות מחדל מוכרות ושטרות פדגוגיים מיינסטרימיים.
+        </p>
+      </div>
+
+      <form class="space-y-6">
+        <div class="bg-purple-50/50 p-5 rounded-xl border border-purple-100">
+          <label class="block text-base font-bold text-slate-900 mb-1">1. זיהוי ברירות המחדל של הבינה המלאכותית</label>
+          <p class="text-xs text-slate-500 mb-3">באילו מקומות בתכנון האפליקציה ה-AI דחף אותך לרעיונות פדגוגיים "סטנדרטיים" או גנריים (כמו חידוני אמריקאיות פשוטים, גיימיפיקציה בנאלית, או משוב שבלוני)?</p>
+          <textarea id="q1_defaults" rows="4" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition shadow-sm" placeholder="תאר/י את הדפוסים הגנריים שה-AI הציע או יצר בגרסאות הראשונות..."></textarea>
+        </div>
+
+        <div class="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100">
+          <label class="block text-base font-bold text-slate-900 mb-1">2. הבלטה מחדש של ההקשר והחזון הפדגוגי</label>
+          <p class="text-xs text-slate-500 mb-3">איזה נואנס ספציפי, מציאות כיתתית מקומית או סגנון הוראה אישי שלך נדחקו הצידה או טושטשו על ידי ברירות המחדל של ה-AI?</p>
+          <textarea id="q1_nuance" rows="4" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition shadow-sm" placeholder="הסבר/י אילו אלמנטים פדגוגיים ייחודיים היית צריך/ה להכניס או להילחם עליהם באופן ידני..."></textarea>
+        </div>
+      </form>
+
+      <div class="mt-8 flex justify-end">
+        <button onclick="nextStep(2)" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold px-7 py-3 rounded-xl text-sm transition shadow-lg shadow-purple-200 flex items-center gap-2">
+          להמשך לחלק 2 &larr;
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section id="step-2" class="step-content bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-xl border border-purple-100 transition-all">
+      <div class="mb-6 border-b border-slate-100 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-pink-700 bg-pink-100 px-3 py-1 rounded-full shadow-sm">חלק 2</span>
+        <h2 class="text-2xl font-bold mt-3 text-slate-900">מיקור חוץ קוגניטיבי (Cognitive Offloading) מול סוכנות מקצועית</h2>
+        <p class="text-slate-600 mt-2 text-sm leading-relaxed">
+          פריקת עומס קוגניטיבי מפחיתה שחיקה, אך העברת שיפוטים פדגוגיים מרכזיים ל-AI עלולה להחליש את הסוכנות והעצמאות המקצועית שלך לאורך זמן.
+        </p>
+      </div>
+
+      <form class="space-y-6">
+        <div class="bg-pink-50/50 p-5 rounded-xl border border-pink-100">
+          <label class="block text-base font-bold text-slate-900 mb-1">1. משימות בסיכון גבוה לניוון קוגניטיבי</label>
+          <p class="text-xs text-slate-500 mb-3">אילו משימות הוראה (למשל: בניית מחוונים, כתיבת משוב לתלמידים, רצוף מהלכי שיעור) הן הפגיע ביותר למיקור חוץ מזיק בעבודה היומיומית שלך?</p>
+          <textarea id="q2_tasks" rows="3" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500 focus:outline-none transition shadow-sm" placeholder="ציין/י 1-2 משימות ליבה שבהן העברת הסמכות ל-AI מסכנת את החשיבה העמוקה שלך..."></textarea>
+        </div>
+
+        <div class="bg-amber-50/50 p-5 rounded-xl border border-amber-100">
+          <label class="block text-base font-bold text-slate-900 mb-1">2. הסתברות למניעת מיקור חוץ קוגניטיבי</label>
+          <p class="text-xs text-slate-500 mb-3">עד כמה זה ריאלי שתצליח/י להימנע מלהעביר חשיבה ביקורתית ל-AI כשהעומס והעייפות בשיאם?</p>
+          
+          <div class="my-5 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-3">
+              <span>סבירות נמוכה מאוד (אסתמך כנראה על AI)</span>
+              <span id="slider-val" class="text-pink-600 font-extrabold text-base px-3 py-1 bg-pink-50 rounded-lg border border-pink-200">50%</span>
+              <span>סבירות גבוהה מאוד (אשמור על גבולות נוקשים)</span>
+            </div>
+            <input id="q2_slider" type="range" min="0" max="100" value="50" oninput="document.getElementById('slider-val').innerText = this.value + '%'" class="w-full accent-pink-600 h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+          </div>
+        </div>
+
+        <div class="bg-purple-50/50 p-5 rounded-xl border border-purple-100">
+          <label class="block text-base font-bold text-slate-900 mb-1">3. בדיקת מציאות כנה ומנגנוני הגנה אישיים</label>
+          <p class="text-xs text-slate-500 mb-3">בהתחשב בדירוג שנתת בסרגל למעלה, סיפק/י הסבר כנה לסיבה שבגללה בחרת בדירוג זה. אילו מנגנוני הגנה מעשיים תציב/י כדי להגן על החשיבה הפדגוגית שלך?</p>
+          <textarea id="q2_honest" rows="4" class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition shadow-sm" placeholder="שתף/י בכנות לגבי אילוצי זמן, לחצים אדמיניסטרטיביים, ותוכנית הפעולה המעשית שלך..."></textarea>
+        </div>
+      </form>
+
+      <div class="mt-8 flex justify-between items-center">
+        <button onclick="nextStep(1)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-6 py-3 rounded-xl text-sm transition">
+          &rarr; חזרה לחלק 1
+        </button>
+        <button onclick="generateSummary(); nextStep(3)" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold px-7 py-3 rounded-xl text-sm transition shadow-lg shadow-pink-200 flex items-center gap-2">
+          יצירת סיכום להגשה &larr;
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section id="step-3" class="step-content bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-xl border border-purple-100 transition-all">
+      <div class="mb-6 flex justify-between items-start border-b border-slate-100 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full shadow-sm">חלק 3</span>
+          <h2 class="text-2xl font-bold mt-3 text-slate-900">סיכום הרפלקציה שלך</h2>
+          <p class="text-slate-600 mt-1 text-sm">העתק/י את הטקסט המעוצב למטה והעלה/י אותו ישירות למודל (Moodle).</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <textarea id="final_output" readonly rows="14" dir="rtl" class="w-full p-4 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl border border-slate-800 leading-relaxed focus:outline-none shadow-inner"></textarea>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3 justify-between items-center">
+        <button onclick="nextStep(2)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-6 py-3 rounded-xl text-sm transition">
+          &rarr; עריכת תשובות
+        </button>
+        <div class="flex gap-3">
+          <button onclick="downloadText()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-5 py-3 rounded-xl text-sm transition shadow-md">
+            הורדה כקובץ .txt
+          </button>
+          <button onclick="copyToClipboard()" id="copy-btn" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold px-7 py-3 rounded-xl text-sm transition shadow-lg shadow-emerald-200 flex items-center gap-2">
+            העתקה עבור ה-Moodle
+          </button>
+        </div>
+      </div>
+      <div id="copy-toast" class="hidden mt-4 text-center p-3 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition">
+        ✓ הטקסט הועתק בהצלחה ללוח! אפשר להדביק כעת במודל.
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function nextStep(stepNumber) {
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      document.getElementById(`step-${stepNumber}`).classList.add('active');
+      document.getElementById('step-indicator').innerText = `שלב ${stepNumber} מתוך 3`;
+      window.scrollTo(0, 0);
+    }
+
+    function generateSummary() {
+      const q1Defaults = document.getElementById('q1_defaults').value || '[לא סופקה תשובה]';
+      const q1Nuance = document.getElementById('q1_nuance').value || '[לא סופקה תשובה]';
+      const q2Tasks = document.getElementById('q2_tasks').value || '[לא סופקה תשובה]';
+      const q2Slider = document.getElementById('q2_slider').value;
+      const q2Honest = document.getElementById('q2_honest').value || '[לא סופקה תשובה]';
+
+      const summary = 
+`==================================================
+הגשת רפלקציה: בינה מלאכותית, פדגוגיה ואוטונומיה מקצועית
+==================================================
+
+חלק 1: נטייה לנורמטיביות ב-VIBE CODING (אפליקציית הסיום)
+--------------------------------------------------
+[1. ברירות מחדל של ה-AI שזוהו בתכנון האפליקציה]:
+${q1Defaults}
+
+[2. הקשר וחזון פדגוגי שנשמרו/הוכנסו מחדש]:
+${q1Nuance}
+
+חלק 2: מיקור חוץ קוגניטיבי (COGNITIVE OFFLOADING) ומנהיגות פדגוגית
+--------------------------------------------------
+[1. משימות בסיכון גבוה לניוון קוגניטיבי]:
+${q2Tasks}
+
+[2. הערכת סבירות למניעת מיקור חוץ קוגניטיבי תחת עומס]:
+דירוג ביטחון: ${q2Slider}%
+
+[3. בדיקת מציאות כנה ומנגנוני הגנה אישיים]:
+${q2Honest}
+
+==================================================
+הוגש באמצעות סדנת הרפלקציה הדיגיטלית
+==================================================`;
+
+      document.getElementById('final_output').value = summary;
+    }
+
+    function copyToClipboard() {
+      const copyText = document.getElementById('final_output');
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+
+      const toast = document.getElementById('copy-toast');
+      const btn = document.getElementById('copy-btn');
+      toast.classList.remove('hidden');
+      btn.innerText = 'הועתק!';
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        btn.innerText = 'העתקה עבור ה-Moodle';
+      }, 3000);
+    }
+
+    function downloadText() {
+      const text = document.getElementById('final_output').value;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const anchor = document.createElement('a');
+      anchor.download = 'AI_Pedagogy_Reflection.txt';
+      anchor.href = window.URL.createObjectURL(blob);
+      anchor.target = '_blank';
+      anchor.style.display = 'none';
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    }
+  </script>
+</body>
+</html>

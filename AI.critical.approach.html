@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מסגרת החקר הביקורתי: AI בחינוך</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Assistant', sans-serif; 
+      background-color: #f8fafc;
+    }
+    h1, h2, h3, .font-serif {
+      font-family: 'Frank Ruhl Libre', serif;
+    }
+    .audience-btn.active {
+      background-color: #0f172a; /* Slate 900 */
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+    /* Elegant thin slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: #0f172a;
+      cursor: pointer;
+      margin-top: -6px;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col p-4 md:p-8">
+
+  <!-- Header -->
+  <header class="max-w-4xl mx-auto w-full mb-10 text-center border-b border-slate-300 pb-8 mt-4">
+    <span class="inline-block text-slate-500 text-sm tracking-widest uppercase mb-3 font-semibold">
+      משימת סיכום • אוריינות ביקורתית
+    </span>
+    <h1 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+      על מה עלינו לעשות רפלקציה?
+    </h1>
+    <p class="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto">
+      עיצוב מסגרת חקר ביקורתית לבינה מלאכותית בהשראת האקולוגיה של התקשורת של ניל פוסטמן
+    </p>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto w-full flex-grow space-y-12">
+    
+    <section>
+      <form class="space-y-10">
+        
+        <!-- Part 1: Postman Questions Framework -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="h-[1px] flex-grow bg-slate-300"></div>
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 px-4">חלק א׳: שאלות החקר בחינוך</h2>
+            <div class="h-[1px] flex-grow bg-slate-300"></div>
+          </div>
+          
+          <p class="text-slate-600 text-center mb-8">
+            לפניך 5 שאלות מפתח ביקורתיות לגבי שילוב בינה מלאכותית. עבור כל שאלה, קבע/י את קהל היעד הראוי, דרג/י את דחיפותה והסבר/י בקצרה את חשיבותה.
+          </p>
+
+          <div class="space-y-8">
+            
+            <!-- Question 1 -->
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm transition hover:shadow-md">
+              <div class="mb-4">
+                <h3 class="font-bold text-xl text-slate-900 mb-2">1. הבעיה והפתרון</h3>
+                <p class="text-slate-600 text-lg border-r-4 border-amber-600 pr-4 my-3 bg-slate-50 py-2">
+                  "איזו בעיה אנושית ספציפית ה-AI מציע לפתור, והאם ה'בעיה' הזו היא בעצם חלק חיוני ממאמץ הלמידה?"
+                </p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-6 py-4 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-semibold text-slate-700">קהל יעד לרפלקציה:</span>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="setAudience(this, 'q1', 'מורים')" class="q1-aud audience-btn active px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">מורים</button>
+                    <button type="button" onclick="setAudience(this, 'q1', 'תלמידים')" class="q1-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">תלמידים</button>
+                    <button type="button" onclick="setAudience(this, 'q1', 'שניהם')" class="q1-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">שניהם</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 w-full md:w-auto min-w-[250px]">
+                  <span class="text-sm font-semibold text-slate-700 whitespace-nowrap">חשיבות בדיון:</span>
+                  <input id="q1_prio" type="range" min="1" max="10" value="5" oninput="document.getElementById('q1-prio-val').innerText = this.value + '/10'" class="w-full" />
+                  <span id="q1-prio-val" class="text-sm font-bold text-slate-900 w-10 text-left">5/10</span>
+                </div>
+              </div>
+
+              <textarea id="q1_note" rows="2" class="w-full p-4 mt-2 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none transition" placeholder="מדוע חיוני שקהל היעד שנבחר יעשה רפלקציה על שאלה זו?"></textarea>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm transition hover:shadow-md">
+              <div class="mb-4">
+                <h3 class="font-bold text-xl text-slate-900 mb-2">2. מרוויחים ומפסידים</h3>
+                <p class="text-slate-600 text-lg border-r-4 border-amber-600 pr-4 my-3 bg-slate-50 py-2">
+                  "אילו קבוצות או אינטרסים מרוויחים ביותר מה-AI הזה, ושל מי השיפוט, הקול או הסוכנות נדחקים לשוליים?"
+                </p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-6 py-4 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-semibold text-slate-700">קהל יעד לרפלקציה:</span>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="setAudience(this, 'q2', 'מורים')" class="q2-aud audience-btn active px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">מורים</button>
+                    <button type="button" onclick="setAudience(this, 'q2', 'תלמידים')" class="q2-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">תלמידים</button>
+                    <button type="button" onclick="setAudience(this, 'q2', 'שניהם')" class="q2-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">שניהם</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 w-full md:w-auto min-w-[250px]">
+                  <span class="text-sm font-semibold text-slate-700 whitespace-nowrap">חשיבות בדיון:</span>
+                  <input id="q2_prio" type="range" min="1" max="10" value="5" oninput="document.getElementById('q2-prio-val').innerText = this.value + '/10'" class="w-full" />
+                  <span id="q2-prio-val" class="text-sm font-bold text-slate-900 w-10 text-left">5/10</span>
+                </div>
+              </div>
+
+              <textarea id="q2_note" rows="2" class="w-full p-4 mt-2 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none transition" placeholder="מדוע חיוני שקהל היעד שנבחר יעשה רפלקציה על שאלה זו?"></textarea>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm transition hover:shadow-md">
+              <div class="mb-4">
+                <h3 class="font-bold text-xl text-slate-900 mb-2">3. העלויות הנסתרות (בעיות חדשות)</h3>
+                <p class="text-slate-600 text-lg border-r-4 border-amber-600 pr-4 my-3 bg-slate-50 py-2">
+                  "אילו בעיות פדגוגיות או יחסתיות חדשות ובלתי צפויות נוצרות בעקבות פתרון הבעיה המקורית באמצעות AI?"
+                </p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-6 py-4 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-semibold text-slate-700">קהל יעד לרפלקציה:</span>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="setAudience(this, 'q3', 'מורים')" class="q3-aud audience-btn active px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">מורים</button>
+                    <button type="button" onclick="setAudience(this, 'q3', 'תלמידים')" class="q3-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">תלמידים</button>
+                    <button type="button" onclick="setAudience(this, 'q3', 'שניהם')" class="q3-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">שניהם</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 w-full md:w-auto min-w-[250px]">
+                  <span class="text-sm font-semibold text-slate-700 whitespace-nowrap">חשיבות בדיון:</span>
+                  <input id="q3_prio" type="range" min="1" max="10" value="5" oninput="document.getElementById('q3-prio-val').innerText = this.value + '/10'" class="w-full" />
+                  <span id="q3-prio-val" class="text-sm font-bold text-slate-900 w-10 text-left">5/10</span>
+                </div>
+              </div>
+
+              <textarea id="q3_note" rows="2" class="w-full p-4 mt-2 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none transition" placeholder="מדוע חיוני שקהל היעד שנבחר יעשה רפלקציה על שאלה זו?"></textarea>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm transition hover:shadow-md">
+              <div class="mb-4">
+                <h3 class="font-bold text-xl text-slate-900 mb-2">4. הגדרה מחדש של השפה החינוכית</h3>
+                <p class="text-slate-600 text-lg border-r-4 border-amber-600 pr-4 my-3 bg-slate-50 py-2">
+                  "כיצד הטכנולוגיה משנה את המשמעות של מושגי יסוד כמו 'כתיבה', 'חשיבה', 'מחקר' או 'ידיעה'?"
+                </p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-6 py-4 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-semibold text-slate-700">קהל יעד לרפלקציה:</span>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="setAudience(this, 'q4', 'מורים')" class="q4-aud audience-btn active px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">מורים</button>
+                    <button type="button" onclick="setAudience(this, 'q4', 'תלמידים')" class="q4-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">תלמידים</button>
+                    <button type="button" onclick="setAudience(this, 'q4', 'שניהם')" class="q4-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">שניהם</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 w-full md:w-auto min-w-[250px]">
+                  <span class="text-sm font-semibold text-slate-700 whitespace-nowrap">חשיבות בדיון:</span>
+                  <input id="q4_prio" type="range" min="1" max="10" value="5" oninput="document.getElementById('q4-prio-val').innerText = this.value + '/10'" class="w-full" />
+                  <span id="q4-prio-val" class="text-sm font-bold text-slate-900 w-10 text-left">5/10</span>
+                </div>
+              </div>
+
+              <textarea id="q4_note" rows="2" class="w-full p-4 mt-2 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none transition" placeholder="מדוע חיוני שקהל היעד שנבחר יעשה רפלקציה על שאלה זו?"></textarea>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm transition hover:shadow-md">
+              <div class="mb-4">
+                <h3 class="font-bold text-xl text-slate-900 mb-2">5. השינוי האקולוגי</h3>
+                <p class="text-slate-600 text-lg border-r-4 border-amber-600 pr-4 my-3 bg-slate-50 py-2">
+                  "כיצד הכנסת הכלי משנה את התרבות הכוללת והדינמיקה האנושית של סביבת הלמידה, מעבר לתוספת נוחות בלבד?"
+                </p>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-6 py-4 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-semibold text-slate-700">קהל יעד לרפלקציה:</span>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="setAudience(this, 'q5', 'מורים')" class="q5-aud audience-btn active px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">מורים</button>
+                    <button type="button" onclick="setAudience(this, 'q5', 'תלמידים')" class="q5-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">תלמידים</button>
+                    <button type="button" onclick="setAudience(this, 'q5', 'שניהם')" class="q5-aud audience-btn px-4 py-1.5 text-sm rounded border border-slate-300 font-medium transition">שניהם</button>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 w-full md:w-auto min-w-[250px]">
+                  <span class="text-sm font-semibold text-slate-700 whitespace-nowrap">חשיבות בדיון:</span>
+                  <input id="q5_prio" type="range" min="1" max="10" value="5" oninput="document.getElementById('q5-prio-val').innerText = this.value + '/10'" class="w-full" />
+                  <span id="q5-prio-val" class="text-sm font-bold text-slate-900 w-10 text-left">5/10</span>
+                </div>
+              </div>
+
+              <textarea id="q5_note" rows="2" class="w-full p-4 mt-2 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none transition" placeholder="מדוע חיוני שקהל היעד שנבחר יעשה רפלקציה על שאלה זו?"></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Part 2: Classroom Provocation Design -->
+        <div class="mt-16 space-y-6">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="h-[1px] flex-grow bg-slate-300"></div>
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 px-4">חלק ב׳: תרגום לשטח ופרובקציה לימודית</h2>
+            <div class="h-[1px] flex-grow bg-slate-300"></div>
+          </div>
+
+          <p class="text-slate-600 text-center mb-8">
+            כיצד תסייע/י לתלמידים או לעמיתים לעבור משימוש לא-ביקורתי לחקר פעיל?
+          </p>
+
+          <div class="space-y-6">
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm">
+              <label class="block text-lg font-bold text-slate-900 mb-2">1. התפיסה המוטעית / התפיסה הלא-ביקורתית המרכזית</label>
+              <p class="text-sm text-slate-500 mb-4">איזו הנחת יסוד לא-ביקורתית לגבי AI רווחת בקרב תלמידים/מורים שטרם קיימו רפלקציה בנושא (למשל: "פלט של AI הוא ניטרלי וחסר פניות", "סיכום ב-AI אינו פוגע בתהליך ההבנה")?</p>
+              <textarea id="misconception" rows="3" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none" placeholder="תאר/י את התפיסה הלא-ביקורתית שתבחר/י לאתגר..."></textarea>
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-md border border-slate-200 shadow-sm">
+              <label class="block text-lg font-bold text-slate-900 mb-2">2. הפעילות או הפרובקציה הלימודית</label>
+              <p class="text-sm text-slate-500 mb-4">תאר/י בקצרה משימה, דיון או ניסוי קצר שיעמתו את הלומדים באופן מעשי עם אחת משאלות החקר של פוסטמן שדרגת למעלה.</p>
+              <textarea id="provocation_activity" rows="4" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-md text-sm focus:border-slate-500 focus:ring-0 focus:outline-none" placeholder="לדוגמה: השוואת ניתוח ה-AI לאירוע מקומי מול החוויה של התלמידים בשטח כדי לחשוף את 'המרוויחים והמפסידים' של הידע..."></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="mt-12 flex justify-center">
+        <button onclick="generateSummary()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-10 py-4 rounded-md text-lg transition shadow-md flex items-center gap-3">
+          הפקת תוכנית חקר להגשה
+        </button>
+      </div>
+    </section>
+
+    <!-- Output Section -->
+    <section id="output-section" class="hidden bg-slate-900 p-6 md:p-10 rounded-md shadow-lg border border-slate-800 text-slate-100 mt-12 mb-20">
+      <div class="mb-8 text-center border-b border-slate-700 pb-6">
+        <h2 class="text-3xl font-serif font-bold text-white mb-2">תוצר הסיכום שלך</h2>
+        <p class="text-slate-400 text-sm">העתק/י את הטקסט למטה והעלה/י אותו ישירות ל-Moodle.</p>
+      </div>
+
+      <div class="relative">
+        <textarea id="final_output" readonly rows="16" dir="rtl" class="w-full p-6 bg-slate-800 text-slate-300 font-mono text-sm rounded border border-slate-700 leading-relaxed focus:outline-none"></textarea>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-4 justify-center items-center">
+        <button onclick="downloadText()" class="bg-slate-700 hover:bg-slate-600 text-white font-medium px-6 py-3 rounded text-sm transition">
+          הורדה כקובץ טקסט
+        </button>
+        <button onclick="copyToClipboard()" id="copy-btn" class="bg-white text-slate-900 hover:bg-slate-100 font-bold px-8 py-3 rounded text-sm transition shadow flex items-center gap-2">
+          העתקה עבור ה-Moodle
+        </button>
+      </div>
+      <div id="copy-toast" class="hidden mt-6 text-center text-emerald-400 text-sm font-bold transition">
+        הטקסט הועתק בהצלחה ללוח. אפשר להדביק כעת.
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const selectedAudience = {
+      q1: 'מורים',
+      q2: 'מורים',
+      q3: 'מורים',
+      q4: 'מורים',
+      q5: 'מורים'
+    };
+
+    function setAudience(btn, qKey, audience) {
+      document.querySelectorAll(`.${qKey}-aud`).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedAudience[qKey] = audience;
+    }
+
+    function generateSummary() {
+      const q1Prio = document.getElementById('q1_prio').value;
+      const q1Note = document.getElementById('q1_note').value || '[לא פורטה הערה]';
+
+      const q2Prio = document.getElementById('q2_prio').value;
+      const q2Note = document.getElementById('q2_note').value || '[לא פורטה הערה]';
+
+      const q3Prio = document.getElementById('q3_prio').value;
+      const q3Note = document.getElementById('q3_note').value || '[לא פורטה הערה]';
+
+      const q4Prio = document.getElementById('q4_prio').value;
+      const q4Note = document.getElementById('q4_note').value || '[לא פורטה הערה]';
+
+      const q5Prio = document.getElementById('q5_prio').value;
+      const q5Note = document.getElementById('q5_note').value || '[לא פורטה הערה]';
+
+      const misconception = document.getElementById('misconception').value || '[לא תוארה תפיסה מוטעית]';
+      const provocation = document.getElementById('provocation_activity').value || '[לא תוארה פעילות]';
+
+      const summary = 
+`==================================================
+משימת סיכום: מסגרת החקר הביקורתי ל-AI בחינוך
+==================================================
+
+חלק א׳: שאלות חקר ביקורתיות (בהשראת פוסטמן)
+--------------------------------------------------
+[1. הבעיה והפתרון]:
+ • קהל יעד לרפלקציה: ${selectedAudience.q1} | חשיבות: ${q1Prio}/10
+ • נימוק: ${q1Note}
+
+[2. מרוויחים ומפסידים]:
+ • קהל יעד לרפלקציה: ${selectedAudience.q2} | חשיבות: ${q2Prio}/10
+ • נימוק: ${q2Note}
+
+[3. העלויות הנסתרות (בעיות חדשות)]:
+ • קהל יעד לרפלקציה: ${selectedAudience.q3} | חשיבות: ${q3Prio}/10
+ • נימוק: ${q3Note}
+
+[4. הגדרה מחדש של השפה החינוכית]:
+ • קהל יעד לרפלקציה: ${selectedAudience.q4} | חשיבות: ${q4Prio}/10
+ • נימוק: ${q4Note}
+
+[5. השינוי האקולוגי]:
+ • קהל יעד לרפלקציה: ${selectedAudience.q5} | חשיבות: ${q5Prio}/10
+ • נימוק: ${q5Note}
+
+חלק ב׳: תרגום לשטח ופרובקציה לימודית
+--------------------------------------------------
+[התפיסה הלא-ביקורתית שאנו מאתגרים]:
+${misconception}
+
+[תכנון הפעילות / הפרובקציה הלימודית]:
+${provocation}
+
+==================================================
+הוגש באמצעות סדנת אוריינות AI ביקורתית
+==================================================`;
+
+      document.getElementById('final_output').value = summary;
+      const outputSection = document.getElementById('output-section');
+      outputSection.classList.remove('hidden');
+      outputSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyToClipboard() {
+      const copyText = document.getElementById('final_output');
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+
+      const toast = document.getElementById('copy-toast');
+      const btn = document.getElementById('copy-btn');
+      toast.classList.remove('hidden');
+      btn.innerText = 'הועתק!';
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        btn.innerText = 'העתקה עבור ה-Moodle';
+      }, 3000);
+    }
+
+    function downloadText() {
+      const text = document.getElementById('final_output').value;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const anchor = document.createElement('a');
+      anchor.download = 'Critical_AI_Inquiry_Framework.txt';
+      anchor.href = window.URL.createObjectURL(blob);
+      anchor.target = '_blank';
+      anchor.style.display = 'none';
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    }
+  </script>
+</body>
+</html>
